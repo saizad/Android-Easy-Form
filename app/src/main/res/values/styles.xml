@@ -1,0 +1,124 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="Theme.MaterialComponents.Light.AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.AppTheme" />
+
+    <style name="SingleLineTextRegular">
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">middle</item>
+    </style>
+
+    <style name="FieldLabel" parent="@style/SingleLineTextRegular">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="HintTextAppearance">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextInputLayoutStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/lightStrokeColor</item>
+        <item name="android:textColorHint">@color/strokeColor</item>
+        <item name="endIconMode">clear_text</item>
+        <item name="hintTextAppearance">@style/HintTextAppearance</item>
+        <item name="hintTextColor">@android:color/darker_gray</item>
+    </style>
+
+    <style name="TextInputEditTextStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColorHint">@android:color/darker_gray</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:minLines">1</item>
+        <item name="android:inputType">text|textNoSuggestions</item>
+    </style>
+
+    <style name="TextInputTheme">
+        <item name="textInputLayoutStyle">@style/TextInputLayoutStyle</item>
+        <item name="textInputEditTextStyle">@style/TextInputEditTextStyle</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.FirstName">
+        <item name="android:hint">FIRST NAME</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.LastName">
+        <item name="android:hint">LAST NAME</item>
+    </style>
+
+    <style name="TextInputEditTextStyle.Name">
+        <item name="android:inputType">textPersonName</item>
+    </style>
+
+    <style name="NameFieldTheme" parent="TextInputTheme">
+        <item name="textInputEditTextStyle">@style/TextInputEditTextStyle.Name</item>
+    </style>
+
+    <style name="NameFieldTheme.FirstName">
+        <item name="textInputLayoutStyle">@style/TextInputLayoutStyle.FirstName</item>
+    </style>
+
+    <style name="NameFieldTheme.LastName">
+        <item name="textInputLayoutStyle">@style/TextInputLayoutStyle.LastName</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.Email">
+        <item name="android:hint">EMAIL</item>
+    </style>
+
+    <style name="TextInputEditTextStyle.Email">
+        <item name="android:inputType">textEmailAddress</item>
+    </style>
+
+    <style name="EmailFieldTheme" parent="TextInputTheme">
+        <item name="textInputLayoutStyle">@style/TextInputLayoutStyle.Email</item>
+        <item name="textInputEditTextStyle">@style/TextInputEditTextStyle.Email</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.MobileNumber">
+        <item name="android:hint">MOBILE NUMBER</item>
+    </style>
+
+    <style name="TextInputEditTextStyle.MobileNumber">
+        <item name="android:inputType">phone</item>
+    </style>
+
+    <style name="MobileNumberFieldTheme" parent="TextInputTheme">
+        <item name="textInputLayoutStyle">@style/TextInputLayoutStyle.MobileNumber</item>
+        <item name="textInputEditTextStyle">@style/TextInputEditTextStyle.MobileNumber</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.Password">
+        <item name="endIconMode">password_toggle</item>
+        <item name="android:hint">PASSWORD</item>
+    </style>
+
+    <style name="TextInputEditTextStyle.Password">
+        <item name="android:inputType">textPassword</item>
+    </style>
+
+    <style name="PasswordFieldTheme" parent="TextInputTheme">
+        <item name="textInputLayoutStyle">@style/TextInputLayoutStyle.Password</item>
+        <item name="textInputEditTextStyle">@style/TextInputEditTextStyle.Password</item>
+    </style>
+
+    <style name="TextInputLayoutStyle.Password.Confirm">
+        <item name="android:hint">CONFIRM PASSWORD</item>
+    </style>
+
+    <style name="ConfirmPasswordFieldTheme" parent="PasswordFieldTheme">
+        <item name="textInputLayoutStyle">@style/TextInputLayoutStyle.Password.Confirm</item>
+    </style>
+
+</resources>

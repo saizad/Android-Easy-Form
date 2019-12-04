@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="modified">@android:color/holo_blue_dark</color>
+    <color name="error">@android:color/holo_red_light</color>
+    <color name="mandatory">@android:color/holo_blue_bright</color>
+    <color name="strokeColor">#f2f2f4</color>
+    <color name="lightStrokeColor">#f8f8f8</color>
+    <color name="white">#ffffff</color>
+    <color name="darkWhite">#fcfcfc</color>
+</resources>

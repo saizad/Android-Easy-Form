@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="mandatory" format="boolean"/>
+    <attr name="edited" format="boolean"/>
+    <attr name="error" format="boolean"/>
+    <attr name="textInputLayoutStyle" format="reference"/>
+    <attr name="textInputEditTextStyle" format="reference"/>
+</resources>
