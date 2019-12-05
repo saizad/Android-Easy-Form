@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import com.sa.easyandroidfrom.ObjectUtils;
 
 
-public class LongField extends BaseField<Long> {
+public class LongField extends Field<Long> {
 
     public LongField(@NonNull String fieldId) {
         super(fieldId);

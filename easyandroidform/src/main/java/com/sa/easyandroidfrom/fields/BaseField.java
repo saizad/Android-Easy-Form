@@ -15,20 +15,22 @@ import static com.sa.easyandroidfrom.ObjectUtils.isNotNull;
 
 public abstract class BaseField<T> {
 
+    private @Nullable
+    Exception validatedException;
     private boolean mIsMandatory;
+    private boolean isValueModified;
+
     @NonNull
     private final String fieldId;
     private final @Nullable
     T ogField;
-    protected transient Object emptyObject = new Object();
+    protected transient final Object emptyObject = new Object();
     private transient BehaviorSubject<Object> subject = BehaviorSubject.create();
-    private transient Observable<Object> observable = subject;
     private transient BehaviorSubject<String> networkErrorSubject = BehaviorSubject.create();
-    private transient Observable<String> networkError = networkErrorSubject;
     private @Nullable
     T field;
     private final static String EMPTY_NETWORK_ERROR_MESSAGE = "--empty---";
-    public boolean isValidCache = false;
+    private boolean isValid = false;
 
     public BaseField(@NonNull String fieldId) {
         this(fieldId, null, false);
@@ -50,7 +52,7 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Object> observable() {
-        return observable;
+        return subject;
     }
 
     public Observable<T> setObservable() {
@@ -58,33 +60,23 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Boolean> validObservable() {
-        return observable().map(o -> isValidCache);
+        return observable().map(o -> isValid);
     }
 
     public Observable<Pair<String, T>> nonEmptyInvalidObservable() {
-        return setObservable().filter(o -> !isValidCache).map(o -> {
-            try {
-                validate();
-                return new Pair<>("--- some thing is broken :( ---", getField());
-            } catch (Exception e) {
-                return new Pair<>(e.getMessage(), field);
-            }
-        });
+        return setObservable()
+                .filter(o -> ObjectUtils.isNotNull(validatedException))
+                .map(__ -> new Pair<>(validatedException.getMessage(), getField()));
     }
 
     public Observable<Pair<String, T>> invalidObservable() {
-        return observable().filter(o -> !isValidCache).map(o -> {
-            try {
-                validate();
-                return new Pair<>("--- some thing is broken :( ---", getField());
-            } catch (Exception e) {
-                return new Pair<>(e.getMessage(), field);
-            }
-        });
+        return observable()
+                .filter(o -> ObjectUtils.isNotNull(validatedException))
+                .map(__ -> new Pair<>(validatedException.getMessage(), getField()));
     }
 
     public Observable<T> notEmptyValidObservable() {
-        return setObservable().filter(o -> isValidCache).map(o -> field);
+        return setObservable().filter(o -> isValid).map(o -> field);
     }
 
     public Observable<Object> fieldUnsetObservable() {
@@ -92,21 +84,26 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Pair<Boolean, String>> runTimeErrorState() {
-        return observable().map(o -> new Pair<>(isValidCache || isRuntimeValid(), getFieldId()));
+        return observable().map(o -> new Pair<>(isValid || isRuntimeValid(), getFieldId()));
     }
 
     public Observable<Pair<Boolean, String>> errorState() {
-        return observable().map(o -> new Pair<>(isValidCache, getFieldId()));
+        return observable().map(o -> new Pair<>(isValid, getFieldId()));
     }
 
     public Observable<Boolean> modified() {
         return observable().map(o -> isModified());
     }
 
-    public boolean isModified() {
-        return !equals(ogField);
+    public Observable<String> networkError() {
+        return networkErrorSubject.filter(s -> !s.equals(EMPTY_NETWORK_ERROR_MESSAGE));
     }
 
+    public boolean isModified() {
+        return ogField != field;
+    }
+
+    //Todo test
     public boolean isRuntimeValid() {
         return ObjectUtils.isNull(field);
     }
@@ -132,17 +129,14 @@ public abstract class BaseField<T> {
     }
 
     public void publish() {
-        isValidCache = __isValid();
-        subject.onNext(emptyObject);
+        isValid = __isValid();
+        subject.onNext(ObjectUtils.coalesce(field, emptyObject));
         networkErrorSubject.onNext(EMPTY_NETWORK_ERROR_MESSAGE);
     }
 
+    //Todo test
     public void networkErrorPublish(String error) {
         networkErrorSubject.onNext(error);
-    }
-
-    public Observable<String> networkError() {
-        return networkError.filter(s -> !s.equals(EMPTY_NETWORK_ERROR_MESSAGE));
     }
 
     @NonNull
@@ -154,26 +148,47 @@ public abstract class BaseField<T> {
         return mIsMandatory;
     }
 
+    //Todo test
     public void setIsMandatory(boolean mIsMandatory) {
         this.mIsMandatory = mIsMandatory;
         publish();
     }
 
     private boolean __isValid() {
+        validatedException = null;
+        boolean retValue = false;
+
         if (!mIsMandatory && ObjectUtils.isNull(field)) {
-            return  true;
+            retValue = true;
+        } else {
+            try {
+                validate();
+                retValue = true;
+            } catch (Exception e) {
+                validatedException = e;
+            }
         }
-        try {
-            validate();
-            return true;
-        } catch (Exception e) {
-            return false;
+
+        if(field != null && ogField != null) {
+            isValueModified = isFieldValueModified(field, ogField);
+        }else if(field == null && ogField == null){
+            isValueModified = false;
+        }else if(ogField == null){
+            isValueModified = true;
         }
+
+        return retValue;
     }
 
-    public boolean isFieldValid() {
-        return isValidCache;
+    public final boolean isFieldValid() {
+        return isValid;
     }
 
-    public abstract void validate() throws Exception;
+    public final boolean hasValueChanged() {
+        return isValueModified;
+    }
+
+    protected abstract boolean isFieldValueModified(@NonNull T field, @NonNull T ogField);
+
+    protected abstract void validate() throws Exception;
 }

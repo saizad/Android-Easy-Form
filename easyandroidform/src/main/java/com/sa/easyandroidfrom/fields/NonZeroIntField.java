@@ -20,7 +20,6 @@ public class NonZeroIntField extends IntegerField {
 
     public NonZeroIntField(@NonNull String fieldId, @Nullable Integer ogField, boolean isMandatory) {
         super(fieldId, ogField, isMandatory);
-        setField(ogField);
     }
 
     @Override

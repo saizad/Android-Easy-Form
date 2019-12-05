@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import com.sa.easyandroidfrom.ObjectUtils;
 
 
-public class FloatField extends BaseField<Float> {
+public class FloatField extends Field<Float> {
 
     public FloatField(@NonNull String fieldId) {
         super(fieldId);

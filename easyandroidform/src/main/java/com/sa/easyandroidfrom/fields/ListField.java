@@ -12,7 +12,7 @@ import java.util.List;
 import io.reactivex.Observable;
 
 
-public class ListField<T> extends BaseField<List<T>> {
+public class ListField<T> extends Field<List<T>> {
 
     public ListField(@NonNull String fieldId) {
         this(fieldId, null);

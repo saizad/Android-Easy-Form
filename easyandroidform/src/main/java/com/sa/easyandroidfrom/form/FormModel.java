@@ -65,7 +65,7 @@ public abstract class FormModel<T> {
 
     public final boolean isAllFieldsValid() {
         for (BaseField field : fields) {
-            if (!field.isValidCache) {
+            if (!field.isFieldValid()) {
                 return false;
             }
         }
@@ -74,7 +74,7 @@ public abstract class FormModel<T> {
 
     public final boolean isAllMandatoryFieldsProvided() {
         for (BaseField field : fields) {
-            if (field.isMandatory() && !field.isValidCache) {
+            if (field.isMandatory() && !field.isFieldValid()) {
                 return false;
             }
         }
@@ -83,7 +83,7 @@ public abstract class FormModel<T> {
 
     public final boolean isFormValid() {
         for (BaseField field : fields) {
-            if (!field.isValidCache) {
+            if (!field.isFieldValid()) {
                 return false;
             }
         }
@@ -101,7 +101,7 @@ public abstract class FormModel<T> {
     public int getMissingMandatoryCount() {
         int count = 0;
         for (BaseField field : fields) {
-            if (field.isMandatory() && !field.isValidCache) {
+            if (field.isMandatory() && !field.isFieldValid()) {
                 count += 1;
             }
         }
@@ -111,7 +111,7 @@ public abstract class FormModel<T> {
     public int getMandatoryCompletedCount() {
         int count = 0;
         for (BaseField field : fields) {
-            if (field.isMandatory() && field.isValidCache) {
+            if (field.isMandatory() && field.isFieldValid()) {
                 count += 1;
             }
         }
@@ -137,7 +137,7 @@ public abstract class FormModel<T> {
     }
 
     public final Observable<Boolean> validFormObservable() {
-        return isAllFieldValidObservable().filter(isValid -> isValid);
+        return isAllFieldValidObservable().filter(__ -> __);
     }
 
     public final Observable<Object> formEdited() {

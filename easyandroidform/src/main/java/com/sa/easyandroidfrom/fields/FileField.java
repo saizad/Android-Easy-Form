@@ -9,7 +9,7 @@ import com.sa.easyandroidfrom.ObjectUtils;
 import com.sa.easyandroidfrom.StringUtils;
 
 
-public class FileField extends BaseField<Uri> {
+public class FileField extends Field<Uri> {
 
   public FileField(@NonNull String fieldId) {
     super(fieldId);

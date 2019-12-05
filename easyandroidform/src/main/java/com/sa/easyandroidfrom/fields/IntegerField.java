@@ -3,7 +3,7 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class IntegerField extends BaseField<Integer> {
+public class IntegerField extends Field<Integer> {
 
     public IntegerField(@NonNull String fieldId) {
         super(fieldId);
@@ -22,15 +22,13 @@ public class IntegerField extends BaseField<Integer> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Integer) {
-            return obj.equals(getField());
-        }
-        return super.equals(obj);
+    protected boolean isFieldValueModified(@NonNull Integer field, @NonNull Integer ogField) {
+        return !field.equals(ogField);
     }
 
     @Override
     public void validate() throws Exception {
 
     }
+
 }

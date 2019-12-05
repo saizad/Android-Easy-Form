@@ -27,7 +27,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
         field.observable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (ObjectUtils.isNotNull(field.field) && !field.isValidCache) {
+                if (ObjectUtils.isNotNull(field.field) && !field.isFieldValid) {
                     error()
                 } else if (field.isModified) {
                     edited()
@@ -40,7 +40,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { pair ->
                 showValue(field.field)
-                displayError(!field.isValidCache, pair.first)
+                displayError(!field.isFieldValid, pair.first)
             }
 
         Observable.merge<Any>(
