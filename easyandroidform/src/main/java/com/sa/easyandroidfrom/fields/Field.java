@@ -28,6 +28,6 @@ public class Field<F> extends BaseField<F> {
 
     @Override
     protected boolean isFieldValueModified(@NonNull F field, @NonNull F ogField) {
-        return false;
+        return true;
     }
 }

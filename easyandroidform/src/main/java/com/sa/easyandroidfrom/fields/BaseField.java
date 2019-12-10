@@ -83,12 +83,8 @@ public abstract class BaseField<T> {
         return observable().filter(o -> ObjectUtils.isNull(field));
     }
 
-    public Observable<Pair<Boolean, String>> runTimeErrorState() {
-        return observable().map(o -> new Pair<>(isValid || isRuntimeValid(), getFieldId()));
-    }
-
-    public Observable<Pair<Boolean, String>> errorState() {
-        return observable().map(o -> new Pair<>(isValid, getFieldId()));
+    public Observable<Pair<Boolean, Exception>> errorState() {
+        return observable().map(o -> new Pair<>(isValid, validatedException));
     }
 
     public Observable<Boolean> modified() {
@@ -101,11 +97,6 @@ public abstract class BaseField<T> {
 
     public boolean isModified() {
         return ogField != field;
-    }
-
-    //Todo test
-    public boolean isRuntimeValid() {
-        return ObjectUtils.isNull(field);
     }
 
     public boolean isSet() {
@@ -134,7 +125,6 @@ public abstract class BaseField<T> {
         networkErrorSubject.onNext(EMPTY_NETWORK_ERROR_MESSAGE);
     }
 
-    //Todo test
     public void networkErrorPublish(String error) {
         networkErrorSubject.onNext(error);
     }
@@ -148,7 +138,6 @@ public abstract class BaseField<T> {
         return mIsMandatory;
     }
 
-    //Todo test
     public void setIsMandatory(boolean mIsMandatory) {
         this.mIsMandatory = mIsMandatory;
         publish();
@@ -162,8 +151,12 @@ public abstract class BaseField<T> {
             retValue = true;
         } else {
             try {
-                validate();
-                retValue = true;
+                if(mIsMandatory && !isSet()){
+                    throw new Exception("Field is mandatory and value is not provided.");
+                }else {
+                    validate();
+                    retValue = true;
+                }
             } catch (Exception e) {
                 validatedException = e;
             }
