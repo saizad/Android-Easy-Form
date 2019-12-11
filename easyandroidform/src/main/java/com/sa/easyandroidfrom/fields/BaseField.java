@@ -83,11 +83,11 @@ public abstract class BaseField<T> {
         return observable().filter(o -> ObjectUtils.isNull(field));
     }
 
-    public Observable<Pair<Boolean, Exception>> errorState() {
+    public Observable<Pair<Boolean, Exception>> errorStateObservable() {
         return observable().map(o -> new Pair<>(isValid, validatedException));
     }
 
-    public Observable<Boolean> modified() {
+    public Observable<Boolean> modifiedObservable() {
         return observable().map(o -> isModified());
     }
 
