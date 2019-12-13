@@ -5,9 +5,6 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sa.easyandroidfrom.ObjectUtils;
-import com.sa.easyandroidfrom.StringUtils;
-
 
 public class FileField extends Field<Uri> {
 
@@ -33,13 +30,7 @@ public class FileField extends Field<Uri> {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if(obj instanceof Uri){
-      return StringUtils.isSame(
-          ObjectUtils.returnNonNull(getField(), Uri.parse("")).toString(),
-          ObjectUtils.returnNonNull(obj, Uri.parse("")).toString());
-    }else{
-      return ObjectUtils.isSameObject(obj, getField());
-    }
+  protected boolean isFieldValueModified(@NonNull Uri field, @NonNull Uri ogField) {
+    return field.toString().compareTo(ogField.toString()) != 0;
   }
 }

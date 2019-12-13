@@ -3,8 +3,6 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sa.easyandroidfrom.ObjectUtils;
-
 
 public class StringField extends Field<String> {
 
@@ -25,12 +23,8 @@ public class StringField extends Field<String> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof String) {
-            return obj.equals(getField());
-        } else {
-            return ObjectUtils.isSameObject(obj, getField());
-        }
+    protected boolean isFieldValueModified(@NonNull String field, @NonNull String ogField) {
+        return field.compareTo(ogField) != 0;
     }
 
     @Override

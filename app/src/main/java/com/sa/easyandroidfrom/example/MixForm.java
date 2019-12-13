@@ -2,7 +2,7 @@ package com.sa.easyandroidfrom.example;
 
 import androidx.annotation.NonNull;
 
-import com.sa.easyandroidfrom.fields.BasePasswordField;
+import com.sa.easyandroidfrom.fields.PasswordField;
 import com.sa.easyandroidfrom.fields.ConfirmPasswordField;
 import com.sa.easyandroidfrom.fields.EmailField;
 import com.sa.easyandroidfrom.fields.GenderField;
@@ -34,7 +34,7 @@ public class MixForm extends MandatoryForm {
         public final PhoneNumberField mobileNumberField;
         public final DobField dobField;
         public final GenderField genderField;
-        public final BasePasswordField passwordField;
+        public final PasswordField passwordField;
         public final ConfirmPasswordField confirmPasswordField;
 
         public Form() {
@@ -45,7 +45,7 @@ public class MixForm extends MandatoryForm {
                     new PhoneNumberField("MobileNumber", true, 10),
                     new DobField("dob", 18),
                     new GenderField("gender", Gender.ToList.getList()),
-                    new BasePasswordField("password"),
+                    new PasswordField("password"),
                     new ConfirmPasswordField("Confirm Password")
             ));
 
@@ -55,7 +55,7 @@ public class MixForm extends MandatoryForm {
             mobileNumberField = (PhoneNumberField) getField("MobileNumber");
             dobField = (DobField) getField("dob");
             genderField = (GenderField) getField("gender");
-            passwordField = (BasePasswordField) getField("password");
+            passwordField = (PasswordField) getField("password");
             confirmPasswordField = (ConfirmPasswordField) getField("Confirm Password");
             confirmPasswordField.setRelated(passwordField);
         }

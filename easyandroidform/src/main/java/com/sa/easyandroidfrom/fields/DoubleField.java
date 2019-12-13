@@ -3,8 +3,6 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sa.easyandroidfrom.ObjectUtils;
-
 
 public class DoubleField extends Field<Double> {
 
@@ -25,12 +23,8 @@ public class DoubleField extends Field<Double> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Double) {
-            return obj.equals(getField());
-        } else {
-            return ObjectUtils.isSameObject(obj, getField());
-        }
+    protected boolean isFieldValueModified(@NonNull Double field, @NonNull Double ogField) {
+        return field.compareTo(ogField) != 0;
     }
 
     @Override

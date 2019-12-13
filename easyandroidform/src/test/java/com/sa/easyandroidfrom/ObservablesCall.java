@@ -1,12 +1,42 @@
 package com.sa.easyandroidfrom;
 
 import com.sa.easyandroidfrom.fields.BaseField;
+import com.sa.easyandroidfrom.fields.Field;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import io.reactivex.observers.TestObserver;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ObservablesCall {
+    private static final String FIELD_NAME = "random";
+
+    @Test
+    public void fieldid_same(Field<?> field){
+        assertEquals(FIELD_NAME, field.getFieldId());
+    }
+
+    @Test
+    public void isMandatory_false(Field<?> field){
+        assertFalse(field.isMandatory());
+    }
+
+    @Test
+    public <M> void isMandatory_true(Field<M> field){
+        final Field<M> spyField = Mockito.spy(field);
+        assertTrue(spyField.isMandatory());
+    }
+
+    @Test
+    public void ogfield_same(){
+        final String any = "any";
+        final Field<Object> spyField = Mockito.spy(new Field<>(FIELD_NAME, any, true));
+        assertEquals(any, spyField.getOgField());
+    }
 
     public static void isFieldValid(BaseField<?> field) {
         assertFalse(field.isFieldValid());
@@ -22,6 +52,13 @@ public class ObservablesCall {
 
     public static void isModifiedObservable(BaseField<?> field, boolean state) {
         final TestObserver<?> testObserver = field.modifiedObservable()
+                .test()
+                .assertValue(state);
+        testObserver.dispose();
+    }
+
+    public static void isValueModifiedObservable(BaseField<?> field, boolean state) {
+        final TestObserver<?> testObserver = field.isValueModifiedObservable()
                 .test()
                 .assertValue(state);
         testObserver.dispose();

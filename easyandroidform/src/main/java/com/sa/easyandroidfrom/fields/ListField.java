@@ -32,7 +32,7 @@ public class ListField<T> extends Field<List<T>> {
     }
 
     @Override
-    public boolean isModified() {
+    protected boolean isFieldValueModified(@NonNull List<T> field, @NonNull List<T> ogField) {
         if (ObjectUtils.isNull(getOgField()))
             return !getField().isEmpty();
 
@@ -42,7 +42,7 @@ public class ListField<T> extends Field<List<T>> {
             }
         }
 
-        return super.isModified();
+        return super.isFieldValueModified(field, ogField);
     }
 
     @Override

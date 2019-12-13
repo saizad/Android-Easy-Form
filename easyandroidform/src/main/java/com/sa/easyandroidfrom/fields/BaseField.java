@@ -91,11 +91,15 @@ public abstract class BaseField<T> {
         return observable().map(o -> isModified());
     }
 
+    public Observable<Boolean> isValueModifiedObservable() {
+        return observable().map(o -> isValueModified);
+    }
+
     public Observable<String> networkError() {
         return networkErrorSubject.filter(s -> !s.equals(EMPTY_NETWORK_ERROR_MESSAGE));
     }
 
-    public boolean isModified() {
+    public final boolean isModified() {
         return ogField != field;
     }
 

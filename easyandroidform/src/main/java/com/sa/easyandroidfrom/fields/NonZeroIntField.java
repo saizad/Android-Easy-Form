@@ -29,4 +29,9 @@ public class NonZeroIntField extends IntegerField {
             throw new Exception("Number should be greater than 0");
         }
     }
+
+    @Override
+    protected boolean isFieldValueModified(@NonNull Integer field, @NonNull Integer ogField) {
+        return !field.equals(ogField);
+    }
 }

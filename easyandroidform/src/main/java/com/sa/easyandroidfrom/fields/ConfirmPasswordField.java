@@ -5,24 +5,24 @@ import androidx.annotation.NonNull;
 
 import com.sa.easyandroidfrom.StringUtils;
 
-public class ConfirmPasswordField extends BasePasswordField {
+public class ConfirmPasswordField extends PasswordField {
 
-    private BasePasswordField basePasswordField;
+    private PasswordField passwordField;
 
     public ConfirmPasswordField(@NonNull String fieldId) {
         super(fieldId);
     }
 
-    public void setRelated(BasePasswordField basePasswordField) {
-        this.basePasswordField = basePasswordField;
-        basePasswordField.observable().subscribe(__ -> publish());
+    public void setRelated(PasswordField passwordField) {
+        this.passwordField = passwordField;
+        passwordField.observable().subscribe(__ -> publish());
     }
 
     @Override
     public void validate() throws Exception {
         super.validate();
-        if (!StringUtils.isNullOrEmpty(basePasswordField.getField())) {
-            if (!basePasswordField.getField().equals(getField())) {
+        if (!StringUtils.isNullOrEmpty(passwordField.getField())) {
+            if (!passwordField.getField().equals(getField())) {
                 throw new Exception("Password doesn't match");
             }
         }

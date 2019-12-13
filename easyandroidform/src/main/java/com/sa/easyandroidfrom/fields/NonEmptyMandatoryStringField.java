@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import com.sa.easyandroidfrom.StringUtils;
 
 
-public class NonEmptyMandatoryStringField extends NonEmptyStringField {
+public class NonEmptyMandatoryStringField extends StringField {
 
     public NonEmptyMandatoryStringField(@NonNull String fieldId) {
         this(fieldId, null);

@@ -3,8 +3,6 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sa.easyandroidfrom.ObjectUtils;
-
 
 public class LongField extends Field<Long> {
 
@@ -25,12 +23,8 @@ public class LongField extends Field<Long> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Long) {
-            return obj.equals(getField());
-        } else {
-            return ObjectUtils.isSameObject(obj, getField());
-        }
+    protected boolean isFieldValueModified(@NonNull Long field, @NonNull Long ogField) {
+        return field.compareTo(ogField) != 0;
     }
 
     @Override

@@ -1,70 +1,32 @@
 package com.sa.easyandroidfrom.fields;
 
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.jetbrains.annotations.NotNull;
 
-public class NonZeroIntFieldTest {
+public class NonZeroIntFieldTest extends BaseFieldTest<Integer> {
 
     private static final String FIELD_NAME = "random";
+    private static final Integer VALUE = 1;
+    private static final Integer NEW_VALUE = 2;
 
-    @Spy
-    final NonZeroIntField nonZeroIntField = Mockito.spy(new NonZeroIntField(FIELD_NAME));
-
-    @BeforeAll
-    static void setUp() {
-        MockitoAnnotations.initMocks(new FieldTest());
+    public NonZeroIntFieldTest() {
+        super(new NonZeroIntField(FIELD_NAME), new NonZeroIntField(FIELD_NAME, true), new NonZeroIntField(FIELD_NAME, VALUE, true), new NonZeroIntField(FIELD_NAME, VALUE));
     }
 
-    @Test
-    public void validObservable_0_false() {
-        nonZeroIntField.setField(0);
-        nonZeroIntField.validObservable()
-                .test()
-                .assertValue(false);
+    @Override
+    protected Integer getInValidFieldValue() {
+        return 0;
     }
 
-    @Test
-    public void validObservable_negative_value_false() {
-        nonZeroIntField.setField(-1);
-        nonZeroIntField.validObservable()
-                .test()
-                .assertValue(false);
+    @NotNull
+    @Override
+    protected String fieldName() {
+        return FIELD_NAME;
     }
 
-    @Test
-    public void validObservable_true() {
-        nonZeroIntField.setField(10);
-        nonZeroIntField.validObservable()
-                .test()
-                .assertValue(true);
-    }
-
-    @Test
-    public void setObservable_same_value() {
-        final int value = 10;
-        nonZeroIntField.setField(value);
-        nonZeroIntField.setObservable()
-                .test()
-                .assertValue(value);
-    }
-
-    @Test
-    public void validObservable_mandatory_true() {
-        final NonZeroIntField nonZeroIntField = new NonZeroIntField("dasfa", 1,true);
-        nonZeroIntField.validObservable()
-                .test()
-                .assertValue(true);
-    }
-
-    @Test
-    public void validObservable_mandatory_false() {
-        final NonZeroIntField nonZeroIntField = new NonZeroIntField("dasfa", true);
-        nonZeroIntField.validObservable()
-                .test()
-                .assertValue(false);
+    @NotNull
+    @Override
+    protected Integer getNewValidFieldValue() {
+        return NEW_VALUE;
     }
 }

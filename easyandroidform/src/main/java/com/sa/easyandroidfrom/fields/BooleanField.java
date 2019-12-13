@@ -22,6 +22,11 @@ public class BooleanField extends Field<Boolean> {
     }
 
     @Override
+    protected boolean isFieldValueModified(@NonNull Boolean field, @NonNull Boolean ogField) {
+        return field.compareTo(ogField) != 0;
+    }
+
+    @Override
     public void validate() throws Exception {
 
     }

@@ -3,17 +3,12 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GenderField extends NonEmptyStringField {
 
 
     private final List<String> genders;
-
-    public GenderField(@NonNull String fieldId) {
-        this(fieldId, new ArrayList<>());
-    }
 
     public GenderField(@NonNull String fieldId, List<String> genders) {
         this(fieldId, false, genders);

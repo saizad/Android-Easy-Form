@@ -1,15 +1,17 @@
 package com.sa.easyandroidfrom.fields;
 
+
 import org.jetbrains.annotations.NotNull;
 
-public class FieldTest extends AllValueValidFieldTest<String> {
+public class ConfirmPasswordFieldTest extends BasePasswordFieldTest {
 
     private static final String FIELD_NAME = "random";
-    private static final String VALUE = "any";
     private static final String NEW_VALUE = "new_value";
 
-    public FieldTest() {
-        super(new Field<>(FIELD_NAME), new Field<>(FIELD_NAME, true), new Field<>(FIELD_NAME, VALUE, true), new Field<>(FIELD_NAME, VALUE));
+    public ConfirmPasswordFieldTest() {
+        super(new ConfirmPasswordField(FIELD_NAME));
+        final PasswordField passwordField = new PasswordField(FIELD_NAME);
+        ((ConfirmPasswordField) field).setRelated(passwordField);
     }
 
     @NotNull
@@ -23,4 +25,5 @@ public class FieldTest extends AllValueValidFieldTest<String> {
     protected String getNewValidFieldValue() {
         return NEW_VALUE;
     }
+
 }

@@ -2,14 +2,14 @@ package com.sa.easyandroidfrom.fields;
 
 import org.jetbrains.annotations.NotNull;
 
-public class FieldTest extends AllValueValidFieldTest<String> {
+class NonEmptyMandatoryStringFieldTest extends BaseNonEmptyMandatoryStringFieldTest {
 
     private static final String FIELD_NAME = "random";
     private static final String VALUE = "any";
     private static final String NEW_VALUE = "new_value";
 
-    public FieldTest() {
-        super(new Field<>(FIELD_NAME), new Field<>(FIELD_NAME, true), new Field<>(FIELD_NAME, VALUE, true), new Field<>(FIELD_NAME, VALUE));
+    public NonEmptyMandatoryStringFieldTest() {
+        super(new NonEmptyMandatoryStringField(FIELD_NAME), new NonEmptyMandatoryStringField(FIELD_NAME, VALUE));
     }
 
     @NotNull
