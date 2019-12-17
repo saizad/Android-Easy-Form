@@ -3,7 +3,6 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sa.easyandroidfrom.ListUtils;
 import com.sa.easyandroidfrom.ObjectUtils;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
 import io.reactivex.Observable;
 
 
-public class ListField<T> extends Field<List<T>> {
+abstract public class ListField<T> extends BaseField<List<T>>{
 
     public ListField(@NonNull String fieldId) {
         this(fieldId, null);
@@ -33,17 +32,22 @@ public class ListField<T> extends Field<List<T>> {
 
     @Override
     protected boolean isFieldValueModified(@NonNull List<T> field, @NonNull List<T> ogField) {
-        if (ObjectUtils.isNull(getOgField()))
-            return !getField().isEmpty();
-
-        for (T ogListValue : getOgField()) {
-            if (!ListUtils.contains(getField(), ogListValue)) {
+        for (T ogFieldItem : ogField) {
+            boolean isModified = false;
+            for (T currentFieldItem : field) {
+                isModified = compare(ogFieldItem, currentFieldItem);
+                if(isModified){
+                    break;
+                }
+            }
+            if(!isModified){
                 return true;
             }
         }
-
-        return super.isFieldValueModified(field, ogField);
+        return false;
     }
+
+    abstract protected boolean compare(T item1, T item2);
 
     @Override
     public void validate() throws Exception {

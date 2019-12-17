@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-public class FloatField extends Field<Float> {
+public class FloatField extends BaseField<Float> {
 
     public FloatField(@NonNull String fieldId) {
         super(fieldId);

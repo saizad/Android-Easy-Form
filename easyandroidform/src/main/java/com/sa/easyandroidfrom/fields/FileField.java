@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-public class FileField extends Field<Uri> {
+public class FileField extends BaseField<Uri> {
 
   public FileField(@NonNull String fieldId) {
     super(fieldId);

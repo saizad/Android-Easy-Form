@@ -6,7 +6,7 @@ import com.sa.easyandroidfrom.fields.PasswordField;
 import com.sa.easyandroidfrom.fields.ConfirmPasswordField;
 import com.sa.easyandroidfrom.fields.EmailField;
 import com.sa.easyandroidfrom.fields.GenderField;
-import com.sa.easyandroidfrom.fields.NonEmptyMandatoryStringField;
+import com.sa.easyandroidfrom.fields.MandatoryStringField;
 import com.sa.easyandroidfrom.fields.PhoneNumberField;
 import com.sa.easyandroidfrom.fields.time.DobField;
 import com.sa.easyandroidfrom.form.FormModel;
@@ -28,8 +28,8 @@ public class MixForm extends MandatoryForm {
 
     public static class Form extends FormModel<MixForm> {
 
-        public final NonEmptyMandatoryStringField firstNameField;
-        public final NonEmptyMandatoryStringField lastNameField;
+        public final MandatoryStringField firstNameField;
+        public final MandatoryStringField lastNameField;
         public final EmailField emailField;
         public final PhoneNumberField mobileNumberField;
         public final DobField dobField;
@@ -39,8 +39,8 @@ public class MixForm extends MandatoryForm {
 
         public Form() {
             super(Arrays.asList(
-                    new NonEmptyMandatoryStringField("firstname"),
-                    new NonEmptyMandatoryStringField("lastname"),
+                    new MandatoryStringField("firstname"),
+                    new MandatoryStringField("lastname"),
                     new EmailField("email", true),
                     new PhoneNumberField("MobileNumber", true, 10),
                     new DobField("dob", 18),
@@ -49,8 +49,8 @@ public class MixForm extends MandatoryForm {
                     new ConfirmPasswordField("Confirm Password")
             ));
 
-            firstNameField = (NonEmptyMandatoryStringField) getField("firstname");
-            lastNameField = (NonEmptyMandatoryStringField) getField("lastname");
+            firstNameField = (MandatoryStringField) getField("firstname");
+            lastNameField = (MandatoryStringField) getField("lastname");
             emailField = (EmailField) getField("email");
             mobileNumberField = (PhoneNumberField) getField("MobileNumber");
             dobField = (DobField) getField("dob");

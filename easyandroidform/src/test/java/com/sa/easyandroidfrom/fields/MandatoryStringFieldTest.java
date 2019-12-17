@@ -2,14 +2,14 @@ package com.sa.easyandroidfrom.fields;
 
 import org.jetbrains.annotations.NotNull;
 
-class NonEmptyMandatoryStringFieldTest extends BaseNonEmptyMandatoryStringFieldTest {
+class MandatoryStringFieldTest extends BaseMandatoryStringFieldTest {
 
     private static final String FIELD_NAME = "random";
     private static final String VALUE = "any";
     private static final String NEW_VALUE = "new_value";
 
-    public NonEmptyMandatoryStringFieldTest() {
-        super(new NonEmptyMandatoryStringField(FIELD_NAME), new NonEmptyMandatoryStringField(FIELD_NAME, VALUE));
+    public MandatoryStringFieldTest() {
+        super(new MandatoryStringField(FIELD_NAME), new MandatoryStringField(FIELD_NAME, VALUE));
     }
 
     @NotNull

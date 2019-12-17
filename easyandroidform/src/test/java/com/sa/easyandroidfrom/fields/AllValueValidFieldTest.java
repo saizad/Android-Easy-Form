@@ -2,7 +2,7 @@ package com.sa.easyandroidfrom.fields;
 
 public abstract class AllValueValidFieldTest<F> extends BaseFieldTest<F> {
 
-    AllValueValidFieldTest(Field<F> field, Field<F> mandatoryField, Field<F> mandatoryOgField, Field<F> nonMandatoryOgField) {
+    AllValueValidFieldTest(BaseField<F> field, BaseField<F> mandatoryField, BaseField<F> mandatoryOgField, BaseField<F> nonMandatoryOgField) {
         super(field, mandatoryField, mandatoryOgField, nonMandatoryOgField);
     }
 
@@ -12,7 +12,7 @@ public abstract class AllValueValidFieldTest<F> extends BaseFieldTest<F> {
     }
 
     @Override
-    final void field_is_in_valid() {
+    final void isFieldValid_false() {
 
     }
 }

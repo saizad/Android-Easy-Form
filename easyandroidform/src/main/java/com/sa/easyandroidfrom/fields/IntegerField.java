@@ -3,7 +3,7 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class IntegerField extends Field<Integer> {
+public class IntegerField extends BaseField<Integer> {
 
     public IntegerField(@NonNull String fieldId) {
         super(fieldId);

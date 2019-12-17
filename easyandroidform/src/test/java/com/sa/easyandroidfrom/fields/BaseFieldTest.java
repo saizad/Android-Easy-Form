@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 abstract class BaseFieldTest<F> {
 
 
-    protected final Field<F> field;
+    protected final BaseField<F> field;
 
-    protected final Field<F> mandatoryField;
+    protected final BaseField<F> mandatoryField;
 
-    protected final Field<F> mandatoryOgField;
+    protected final BaseField<F> mandatoryOgField;
 
-    protected final Field<F> nonMandatoryOgField;
+    protected final BaseField<F> nonMandatoryOgField;
 
     protected static final String NETWORK_ERROR = "error";
 
@@ -33,7 +33,7 @@ abstract class BaseFieldTest<F> {
     protected abstract @NonNull
     String fieldName();
 
-    BaseFieldTest(Field<F> field, Field<F> mandatoryField, Field<F> mandatoryOgField, Field<F> nonMandatoryOgField) {
+    BaseFieldTest(BaseField<F> field, BaseField<F> mandatoryField, BaseField<F> mandatoryOgField, BaseField<F> nonMandatoryOgField) {
         this.field = Mockito.spy(field);
         this.mandatoryField = Mockito.spy(mandatoryField);
         this.mandatoryOgField = Mockito.spy(mandatoryOgField);
@@ -102,13 +102,13 @@ abstract class BaseFieldTest<F> {
     }
 
     @Test
-    void field_is_in_valid() {
+    void isFieldValid_false() {
         field.setField(getInValidFieldValue());
         assertFalse(field.isFieldValid());
     }
 
     @Test
-    void field_is_valid() {
+    void isFieldValid_true() {
         field.setField(getNewValidFieldValue());
         assertTrue(field.isFieldValid());
     }

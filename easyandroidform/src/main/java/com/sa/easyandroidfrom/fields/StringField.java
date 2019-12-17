@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-public class StringField extends Field<String> {
+public class StringField extends BaseField<String> {
 
     public StringField(@NonNull String fieldId) {
         super(fieldId);

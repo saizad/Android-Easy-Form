@@ -7,16 +7,20 @@ import androidx.annotation.Nullable;
 import com.sa.easyandroidfrom.StringUtils;
 
 
-public class NonEmptyMandatoryStringField extends StringField {
+public class MandatoryStringField extends MandatoryField<String> {
 
-    public NonEmptyMandatoryStringField(@NonNull String fieldId) {
+    public MandatoryStringField(@NonNull String fieldId) {
         this(fieldId, null);
     }
 
-    public NonEmptyMandatoryStringField(@NonNull String fieldId, @Nullable String ogField) {
-        super(fieldId, ogField, true);
+    public MandatoryStringField(@NonNull String fieldId, @Nullable String ogField) {
+        super(fieldId, ogField);
     }
 
+    @Override
+    protected boolean isFieldValueModified(@NonNull String field, @NonNull String ogField) {
+        return field.compareTo(ogField) != 0;
+    }
 
     @Override
     @CallSuper

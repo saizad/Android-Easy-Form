@@ -1,14 +1,9 @@
 package com.sa.easyandroidfrom.fields;
 
-abstract class BaseNonEmptyMandatoryStringFieldTest extends BaseFieldTest<String> {
+abstract class BaseMandatoryFieldTest<F> extends BaseFieldTest<F> {
 
-    public BaseNonEmptyMandatoryStringFieldTest(NonEmptyMandatoryStringField mandatoryField, NonEmptyMandatoryStringField nonEmptyMandatoryField) {
+    public BaseMandatoryFieldTest(MandatoryField<F> mandatoryField, MandatoryField<F> nonEmptyMandatoryField) {
         super(mandatoryField, mandatoryField, nonEmptyMandatoryField, nonEmptyMandatoryField);
-    }
-
-    @Override
-    protected String getInValidFieldValue() {
-        return "";
     }
 
     @Override

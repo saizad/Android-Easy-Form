@@ -3,7 +3,7 @@ package com.sa.easyandroidfrom.example;
 import androidx.annotation.NonNull;
 
 import com.sa.easyandroidfrom.fields.EmailField;
-import com.sa.easyandroidfrom.fields.NonEmptyMandatoryStringField;
+import com.sa.easyandroidfrom.fields.MandatoryStringField;
 import com.sa.easyandroidfrom.fields.PhoneNumberField;
 import com.sa.easyandroidfrom.form.FormModel;
 
@@ -26,16 +26,16 @@ public class MandatoryForm {
 
     public static class Form extends FormModel<MandatoryForm>{
 
-        public final NonEmptyMandatoryStringField firstNameField;
-        public final NonEmptyMandatoryStringField lastNameField;
+        public final MandatoryStringField firstNameField;
+        public final MandatoryStringField lastNameField;
         public final EmailField emailField;
         public final PhoneNumberField mobileNumberField;
 
         public Form() {
-            super(Arrays.asList(new NonEmptyMandatoryStringField("firstname"), new NonEmptyMandatoryStringField("lastname"), new EmailField("email", true), new PhoneNumberField("mobilenumber",true, 10)));
+            super(Arrays.asList(new MandatoryStringField("firstname"), new MandatoryStringField("lastname"), new EmailField("email", true), new PhoneNumberField("mobilenumber",true, 10)));
 
-            firstNameField = (NonEmptyMandatoryStringField) getField("firstname");
-            lastNameField = (NonEmptyMandatoryStringField) getField("lastname");
+            firstNameField = (MandatoryStringField) getField("firstname");
+            lastNameField = (MandatoryStringField) getField("lastname");
             emailField = (EmailField) getField("email");
             mobileNumberField = (PhoneNumberField) getField("mobilenumber");
         }

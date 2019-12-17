@@ -1,7 +1,7 @@
 package com.sa.easyandroidfrom.fields;
 
 
-abstract public class BasePasswordFieldTest extends BaseNonEmptyMandatoryStringFieldTest {
+abstract public class BasePasswordFieldTest extends BaseMandatoryStringFieldTest {
 
 
     public BasePasswordFieldTest(PasswordField passwordField) {

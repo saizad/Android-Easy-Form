@@ -26,6 +26,11 @@ public class NonEmptyListField<T> extends ListField<T> {
     }
 
     @Override
+    protected boolean compare(T item1, T item2) {
+        return false;
+    }
+
+    @Override
     public void validate() throws Exception {
         if(getField().isEmpty()){
             throw new Exception("List can't be empty");

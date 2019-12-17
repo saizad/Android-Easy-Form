@@ -3,7 +3,7 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class BooleanField extends Field<Boolean> {
+public class BooleanField extends BaseField<Boolean> {
 
     public BooleanField(@NonNull String fieldId, @Nullable Boolean ogField, boolean isMandatory) {
         super(fieldId, ogField, isMandatory);
