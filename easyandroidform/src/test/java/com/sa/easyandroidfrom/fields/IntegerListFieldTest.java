@@ -1,16 +1,17 @@
 package com.sa.easyandroidfrom.fields;
 
+import androidx.annotation.NonNull;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class IntegerListFieldTest extends AllValueValidFieldTest<List<Integer>> {
+public class IntegerListFieldTest extends BaseListFieldTest<Integer> {
 
     private static final String FIELD_NAME = "random";
-    private static final List<Integer> VALUE = Arrays.asList(3,2);
-    private static final List<Integer> NEW_VALUE = Arrays.asList(1,3,2);
+    private static final List<Integer> VALUE = Arrays.asList(3, 2, 9);
 
     public IntegerListFieldTest() {
         super(new IntegerListField(FIELD_NAME), new IntegerListField(FIELD_NAME, true), new IntegerListField(FIELD_NAME, VALUE, true), new IntegerListField(FIELD_NAME, VALUE));
@@ -22,9 +23,22 @@ public class IntegerListFieldTest extends AllValueValidFieldTest<List<Integer>> 
         return FIELD_NAME;
     }
 
-    @NotNull
+
+    @NonNull
     @Override
-    protected List<Integer> getNewValidFieldValue() {
-        return NEW_VALUE;
+    protected List<Integer> getListSizeMoreThanOGField() {
+        return Arrays.asList(3, 2, 5, 10);
+    }
+
+    @NonNull
+    @Override
+    protected List<Integer> getListSizeLessThanOGField() {
+        return Arrays.asList(1, 3);
+    }
+
+    @NonNull
+    @Override
+    protected List<Integer> getListSizeEqualToOGField() {
+        return Arrays.asList(2, 3, 4);
     }
 }

@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 abstract class BaseFieldTest<F> {
@@ -61,11 +60,6 @@ abstract class BaseFieldTest<F> {
     }
 
     @Test
-    void ogfield_not_same() {
-        assertNotEquals(getNewValidFieldValue(), mandatoryOgField.getOgField());
-    }
-
-    @Test
     void isModified_false() {
         assertFalse(field.isModified());
     }
@@ -83,8 +77,8 @@ abstract class BaseFieldTest<F> {
 
     @Test
     void field_hasValueChanged() {
-        field.setField(getNewValidFieldValue());
-        assertTrue(field.hasValueChanged());
+        nonMandatoryOgField.setField(getNewValidFieldValue());
+        assertTrue(nonMandatoryOgField.hasValueChanged());
     }
 
     @Test
@@ -103,8 +97,8 @@ abstract class BaseFieldTest<F> {
 
     @Test
     void isFieldValid_false() {
-        field.setField(getInValidFieldValue());
-        assertFalse(field.isFieldValid());
+        mandatoryField.setField(getInValidFieldValue());
+        assertFalse(mandatoryField.isFieldValid());
     }
 
     @Test
@@ -121,8 +115,7 @@ abstract class BaseFieldTest<F> {
 
     @Test
     void null_filed_with_mandatory_field() {
-        field.setIsMandatory(true);
-        ObservablesCall.isFieldValid(field);
+        ObservablesCall.isFieldValid(mandatoryField);
     }
 
     @Test

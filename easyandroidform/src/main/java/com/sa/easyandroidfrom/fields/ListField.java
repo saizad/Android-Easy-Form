@@ -3,9 +3,6 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.sa.easyandroidfrom.ObjectUtils;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -32,15 +29,19 @@ abstract public class ListField<T> extends BaseField<List<T>>{
 
     @Override
     protected boolean isFieldValueModified(@NonNull List<T> field, @NonNull List<T> ogField) {
-        for (T ogFieldItem : ogField) {
+        if(field.size() != ogField.size()){
+            return true;
+        }
+        for (T currentFieldItem : field) {
             boolean isModified = false;
-            for (T currentFieldItem : field) {
-                isModified = compare(ogFieldItem, currentFieldItem);
-                if(isModified){
+            for (T ogFieldItem : ogField) {
+                boolean found = compare(ogFieldItem, currentFieldItem);
+                isModified = !found;
+                if(found){
                     break;
                 }
             }
-            if(!isModified){
+            if(isModified){
                 return true;
             }
         }
@@ -51,21 +52,9 @@ abstract public class ListField<T> extends BaseField<List<T>>{
 
     @Override
     public void validate() throws Exception {
-
-    }
-
-    @Override
-    public void setField(@Nullable List<T> value) {
-        if (ObjectUtils.isNull(value)) {
-            value = new ArrayList<>();
+        if(isMandatory() && isSet() && getField().isEmpty()){
+            throw new Exception("Mandatory list can't be empty");
         }
-        super.setField(value);
-    }
-
-    @NonNull
-    @Override
-    public List<T> getField() {
-        return ObjectUtils.coalesce(super.getField(), new ArrayList<>());
     }
 
     public Observable<List<T>> emptyListObservable() {

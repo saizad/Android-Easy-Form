@@ -1,10 +1,7 @@
 package com.sa.easyandroidfrom.fields;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.sa.easyandroidfrom.ObjectUtils;
 
 
 public class MandatoryFloatField extends MandatoryField<Float> {
@@ -24,9 +21,4 @@ public class MandatoryFloatField extends MandatoryField<Float> {
         return field.compareTo(ogField) != 0;
     }
 
-    @Override
-    @CallSuper
-    public void setField(@Nullable Float value) {
-        super.setField(ObjectUtils.coalesce(value, 0F));
-    }
 }

@@ -26,7 +26,7 @@ public class MandatoryStringField extends MandatoryField<String> {
     @CallSuper
     public void validate() throws Exception {
         if (StringUtils.isNullOrEmpty(getField())) {
-            throw new Exception(getFieldId() + " is required");
+            throw new Exception("Field can't be null or empty");
         }
     }
 }

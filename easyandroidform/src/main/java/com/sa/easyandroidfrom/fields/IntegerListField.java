@@ -25,6 +25,6 @@ public class IntegerListField extends ListField<Integer> {
 
     @Override
     protected boolean compare(Integer item1, Integer item2) {
-        return item1.compareTo(item2) != 0;
+        return item1.compareTo(item2) == 0;
     }
 }

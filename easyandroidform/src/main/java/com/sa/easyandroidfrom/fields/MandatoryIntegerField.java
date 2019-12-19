@@ -1,10 +1,7 @@
 package com.sa.easyandroidfrom.fields;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.sa.easyandroidfrom.ObjectUtils;
 
 
 public class MandatoryIntegerField extends MandatoryField<Integer> {
@@ -24,9 +21,5 @@ public class MandatoryIntegerField extends MandatoryField<Integer> {
     protected boolean isFieldValueModified(@NonNull Integer field, @NonNull Integer ogField) {
         return field.compareTo(ogField) != 0;
     }
-    @Override
-    @CallSuper
-    public void setField(@Nullable Integer value) {
-        super.setField(ObjectUtils.coalesce(value, 0));
-    }
+
 }

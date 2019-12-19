@@ -1,10 +1,7 @@
 package com.sa.easyandroidfrom.fields;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.sa.easyandroidfrom.ObjectUtils;
 
 
 public class MandatoryBooleanField extends MandatoryField<Boolean> {
@@ -21,11 +18,5 @@ public class MandatoryBooleanField extends MandatoryField<Boolean> {
     @Override
     protected boolean isFieldValueModified(@NonNull Boolean field, @NonNull Boolean ogField) {
         return field.compareTo(ogField) != 0;
-    }
-
-    @Override
-    @CallSuper
-    public void setField(@Nullable Boolean value) {
-        super.setField(ObjectUtils.coalesce(value, false));
     }
 }
