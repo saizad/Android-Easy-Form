@@ -39,10 +39,10 @@ public abstract class FormModel<T> {
     }
 
     @Nullable
-    public final BaseField getField(String fieldName) {
+    public final <F extends BaseField> F getField(String fieldName) {
         for (BaseField field : fields) {
             if (field.getFieldId().equalsIgnoreCase(fieldName)) {
-                return field;
+                return (F) field;
             }
         }
         return null;
