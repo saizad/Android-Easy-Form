@@ -16,13 +16,13 @@ import static com.sa.easyandroidfrom.ObjectUtils.isNotNull;
 public abstract class BaseField<T> {
 
     private @Nullable
-    Exception validatedException;
-    private boolean mIsMandatory;
-    private boolean isValueModified;
+    transient Exception validatedException;
+    private transient boolean mIsMandatory;
+    private transient boolean isValueModified;
 
     @NonNull
-    private final String fieldId;
-    private final @Nullable
+    private transient final String fieldId;
+    private transient final @Nullable
     T ogField;
     protected transient final Object emptyObject = new Object();
     private transient BehaviorSubject<Object> subject = BehaviorSubject.create();
@@ -30,7 +30,7 @@ public abstract class BaseField<T> {
     private @Nullable
     T field;
     private final static String EMPTY_NETWORK_ERROR_MESSAGE = "--empty---";
-    private boolean isValid = false;
+    private transient boolean isValid = false;
 
     public BaseField(@NonNull String fieldId) {
         this(fieldId, null, false);
@@ -100,6 +100,7 @@ public abstract class BaseField<T> {
     }
 
     public final boolean isModified() {
+        //TODO BUG if ogField was null then it shouldn't equate to modifed
         return ogField != field;
     }
 
@@ -109,6 +110,18 @@ public abstract class BaseField<T> {
 
     @Nullable
     public T getField() {
+        try {
+            return requiredField();
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @NonNull
+    public T requiredField() {
+        if(field == null){
+            throw new IllegalStateException(fieldId + " has a null value");
+        }
         return field;
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 import io.reactivex.Observable;
 
 
-abstract public class ListField<T> extends BaseField<List<T>>{
+public class ListField<T> extends BaseField<List<T>>{
 
     public ListField(@NonNull String fieldId) {
         this(fieldId, null);
@@ -48,7 +48,9 @@ abstract public class ListField<T> extends BaseField<List<T>>{
         return false;
     }
 
-    abstract protected boolean compare(T item1, T item2);
+    protected boolean compare(T item1, T item2){
+        return item1.equals(item2);
+    }
 
     @Override
     public void validate() throws Exception {

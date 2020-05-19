@@ -38,14 +38,23 @@ public abstract class FormModel<T> {
         allFieldObservable.mergeWith(field.observable());
     }
 
-    @Nullable
-    public final <F extends BaseField> F getField(String fieldName) {
+    @NonNull
+    public final <F extends BaseField> F requiredField(String fieldName) {
         for (BaseField field : fields) {
             if (field.getFieldId().equalsIgnoreCase(fieldName)) {
                 return (F) field;
             }
         }
-        return null;
+        throw new IllegalStateException(fieldName + " not found");
+    }
+
+    @Nullable
+    public final <F extends BaseField> F getField(String fieldName) {
+        try {
+            return requiredField(fieldName);
+        }catch (Exception e) {
+            return null;
+        }
     }
 
     public final void publish() {

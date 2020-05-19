@@ -25,6 +25,7 @@ public class PhoneNumberField extends NonEmptyStringField {
     public PhoneNumberField(@NonNull String fieldId, @Nullable String ogField, boolean isMandatory, int length) {
         super(fieldId, ogField, isMandatory);
         this.length = length;
+        publish();
     }
 
     private boolean isValid() {
