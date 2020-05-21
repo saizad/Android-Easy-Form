@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.sa.easyandroidfrom.StringUtils;
 
+import io.reactivex.exceptions.CompositeException;
+
 
 public class EmailField extends NonEmptyStringField {
 
@@ -25,9 +27,10 @@ public class EmailField extends NonEmptyStringField {
     }
 
     @Override
-    public void validate() throws Exception {
-        if(!StringUtils.isValidEmail(getField())){
-            throw new Exception("Invalid email");
+    public void validate() throws CompositeException {
+        super.validate();
+        if (!StringUtils.isValidEmail(getField())) {
+            throw new CompositeException(new Exception("Invalid email"));
         }
     }
 }

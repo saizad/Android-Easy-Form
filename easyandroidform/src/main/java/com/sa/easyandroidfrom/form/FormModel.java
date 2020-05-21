@@ -1,39 +1,46 @@
 package com.sa.easyandroidfrom.form;
 
+import android.annotation.SuppressLint;
+
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.sa.easyandroidfrom.ErrorField;
 import com.sa.easyandroidfrom.fields.BaseField;
+import com.sa.easyandroidfrom.fields.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.exceptions.CompositeException;
 
-public abstract class FormModel<T> {
+public abstract class FormModel<T> extends Field<T> {
 
-    private final transient List<BaseField> fields;
+    public final transient List<BaseField> fields;
     private final transient Observable<Object> allFieldObservable;
-    private transient int mandatory = 0;
 
-    public FormModel(List<BaseField> fields) {
-        this.fields = fields;
-        ArrayList<Observable<Object>> list = new ArrayList<>();
-        for (BaseField field : fields) {
-            list.add(field.observable());
-            incrementMandatory(field);
-        }
-        allFieldObservable = Observable.merge(list);
+    public FormModel(ArrayList<BaseField> fields) {
+        this("form", fields);
     }
 
-    private void incrementMandatory(BaseField field) {
-        if (field.isMandatory()) {
-            mandatory += 1;
+    public FormModel(@NonNull String fieldId, ArrayList<BaseField> fields) {
+        this(fieldId, false, fields);
+    }
+
+    public FormModel(String fieldId, boolean isMandatory, ArrayList<BaseField> fields) {
+        super(fieldId, isMandatory);
+        this.fields = fields;
+        List<Observable<Object>> list = new ArrayList<>();
+        for (BaseField field : fields) {
+            list.add(field.observable());
         }
+        allFieldObservable = Observable.merge(list);
+        super.setField(null);
     }
 
     public void add(BaseField field) {
-        incrementMandatory(field);
         fields.add(field);
         allFieldObservable.mergeWith(field.observable());
     }
@@ -45,25 +52,47 @@ public abstract class FormModel<T> {
                 return (F) field;
             }
         }
-        throw new IllegalStateException(fieldName + " not found");
+        throw new IllegalStateException(fieldName + " form field not found");
     }
 
     @Nullable
     public final <F extends BaseField> F getField(String fieldName) {
         try {
             return requiredField(fieldName);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
     public final void publish() {
+        super.publish();
         for (BaseField field : fields) {
             field.publish();
         }
     }
 
-    public final boolean isModified() {
+    @Override
+    protected boolean isFieldValueModified(@NonNull T field, @NonNull T ogField) {
+        return isFormModified();
+    }
+
+    @CallSuper
+    @Override
+    public void validate() throws CompositeException {
+        List<CompositeException> exceptions = new ArrayList<>();
+        for (BaseField field : fields) {
+            try {
+                field.validate();
+            } catch (CompositeException e) {
+                exceptions.add(e);
+            }
+        }
+        if (!exceptions.isEmpty()) {
+            throw new CompositeException(exceptions);
+        }
+    }
+
+    public final boolean isFormModified() {
         for (BaseField field : fields) {
             if (field.isModified()) {
                 return true;
@@ -97,14 +126,6 @@ public abstract class FormModel<T> {
             }
         }
         return true;
-    }
-
-    public int getCount() {
-        return fields.size();
-    }
-
-    public int getMandatoryCount() {
-        return mandatory;
     }
 
     public int getMissingMandatoryCount() {
@@ -153,18 +174,63 @@ public abstract class FormModel<T> {
         return allFieldObservable;
     }
 
-    @Nullable
-    public final T build() {
+    @NonNull
+    public final T requiredBuild() {
         if (isAllMandatoryFieldsProvided()) {
             return buildForm();
         }
-        return null;
+        throw new IllegalStateException("All mandatory fields provided are not valid");
+    }
+
+    @Nullable
+    public final T build() {
+        try {
+            return requiredBuild();
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     @NonNull
     protected abstract T buildForm();
 
-    protected <M> Observable<M> submit(Observable<M> observable) {
-        return observable;
+    @Nullable
+    @Override
+    public T getField() {
+        throw new UnsupportedOperationException("Call getField is supported on Form Field");
+    }
+
+    @NonNull
+    @Override
+    public T requiredField() {
+        throw new UnsupportedOperationException("Call requiredField is supported on Form Field");
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void setField(@Nullable T value) {
+
+    }
+
+    public List<ErrorField> errors() {
+        List<ErrorField> errorFieldList = new ArrayList<>();
+        for (BaseField field : fields) {
+            try {
+                field.validate();
+            } catch (CompositeException e) {
+                errorFieldList.add(new ErrorField(field.getFieldId(), e));
+            }
+        }
+        return errorFieldList;
+    }
+
+    @Override
+    public boolean isSet() {
+        for (BaseField field : fields) {
+            if(field.isSet()){
+                return true;
+            }
+        }
+        return false;
     }
 }

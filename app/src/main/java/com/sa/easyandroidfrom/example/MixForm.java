@@ -11,6 +11,7 @@ import com.sa.easyandroidfrom.fields.PhoneNumberField;
 import com.sa.easyandroidfrom.fields.time.DobField;
 import com.sa.easyandroidfrom.form.FormModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MixForm extends MandatoryForm {
@@ -38,7 +39,7 @@ public class MixForm extends MandatoryForm {
         public final ConfirmPasswordField confirmPasswordField;
 
         public Form() {
-            super(Arrays.asList(
+            super(new ArrayList<>(Arrays.asList(
                     new MandatoryStringField("firstname"),
                     new MandatoryStringField("lastname"),
                     new EmailField("email", true),
@@ -47,7 +48,7 @@ public class MixForm extends MandatoryForm {
                     new GenderField("gender", Gender.ToList.getList()),
                     new PasswordField("password"),
                     new ConfirmPasswordField("Confirm Password")
-            ));
+            )));
 
             firstNameField = (MandatoryStringField) getField("firstname");
             lastNameField = (MandatoryStringField) getField("lastname");

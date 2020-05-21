@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
+import io.reactivex.exceptions.CompositeException;
+
 public class DobField extends PastDateField {
 
     private final int minAge;
@@ -22,13 +24,22 @@ public class DobField extends PastDateField {
         this.minAge = minAge;
     }
 
+    public DobField(@NonNull String fieldId, boolean isMandatory, int minAge) {
+        this(fieldId, null, isMandatory, minAge);
+    }
+
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
         super.validate();
         final DateTime dateTime = dateTime();
-        final DateTime currentDateTime = new DateTime();
-        if(dateTime.plusYears(minAge).isAfter(currentDateTime)){
-            throw new Exception("Minimum age required is " + minAge);
+        if(isMandatory() || dateTime != null) {
+            final DateTime currentDateTime = new DateTime();
+            if(dateTime == null){
+                throw new CompositeException(new Exception(getFieldId() + " is mandatory"));
+            }
+            if (dateTime.plusYears(minAge).isAfter(currentDateTime)) {
+                throw new CompositeException(new Exception("Minimum age required is " + minAge));
+            }
         }
     }
 }

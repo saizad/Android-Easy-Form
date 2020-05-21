@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 
 import com.sa.easyandroidfrom.StringUtils;
 
+import io.reactivex.exceptions.CompositeException;
+
 
 public class MandatoryStringField extends MandatoryField<String> {
 
@@ -24,9 +26,10 @@ public class MandatoryStringField extends MandatoryField<String> {
 
     @Override
     @CallSuper
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
+        super.validate();
         if (StringUtils.isNullOrEmpty(getField())) {
-            throw new Exception("Field can't be null or empty");
+            throw new CompositeException(new Exception("Field can't be null or empty"));
         }
     }
 }

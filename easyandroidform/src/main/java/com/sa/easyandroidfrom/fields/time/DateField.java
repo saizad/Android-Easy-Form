@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
+import io.reactivex.exceptions.CompositeException;
+
 public class DateField extends DateTimeField {
 
 
@@ -25,7 +27,8 @@ public class DateField extends DateTimeField {
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
+        super.validate();
         new DateTime(super.getField());
     }
 

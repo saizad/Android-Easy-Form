@@ -3,6 +3,8 @@ package com.sa.easyandroidfrom.fields;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.reactivex.exceptions.CompositeException;
+
 public class NonZeroIntField extends IntegerField {
 
 
@@ -23,10 +25,11 @@ public class NonZeroIntField extends IntegerField {
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
+        super.validate();
         final Integer field = getField();
         if (field != null && field <= 0) {
-            throw new Exception("Number should be greater than 0");
+            throw new CompositeException(new Exception("Number should be greater than 0"));
         }
     }
 

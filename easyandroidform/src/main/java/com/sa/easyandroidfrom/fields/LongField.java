@@ -26,9 +26,4 @@ public class LongField extends BaseField<Long> {
     protected boolean isFieldValueModified(@NonNull Long field, @NonNull Long ogField) {
         return field.compareTo(ogField) != 0;
     }
-
-    @Override
-    public void validate() throws Exception {
-
-    }
 }

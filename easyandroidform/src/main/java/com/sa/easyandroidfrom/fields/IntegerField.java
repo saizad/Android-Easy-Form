@@ -25,10 +25,4 @@ public class IntegerField extends BaseField<Integer> {
     protected boolean isFieldValueModified(@NonNull Integer field, @NonNull Integer ogField) {
         return !field.equals(ogField);
     }
-
-    @Override
-    public void validate() throws Exception {
-
-    }
-
 }

@@ -3,6 +3,7 @@ package com.sa.easyandroidfrom;
 import android.util.Patterns;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.PatternsCompat;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -53,7 +54,7 @@ public class StringUtils {
   }
 
   public static boolean isValidEmail(String email) {
-    return !StringUtils.isNullOrEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    return !StringUtils.isNullOrEmpty(email) && PatternsCompat.EMAIL_ADDRESS.matcher(email).matches();
   }
 
   public static boolean isURL(String url) {

@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
+import io.reactivex.exceptions.CompositeException;
+
 
 public class FutureDateTimeField extends DateTimeField {
 
@@ -26,10 +28,11 @@ public class FutureDateTimeField extends DateTimeField {
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
+        super.validate();
         final DateTime dateTime = dateTime();
         if (dateTime != null && dateTime.isBeforeNow()) {
-            throw new Exception("Date time can't be set before current date time");
+            throw new CompositeException(new Exception("Date time can't be set before current date time"));
         }
     }
 }

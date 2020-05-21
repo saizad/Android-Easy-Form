@@ -7,6 +7,8 @@ import com.sa.easyandroidfrom.fields.StringField;
 
 import org.joda.time.DateTime;
 
+import io.reactivex.exceptions.CompositeException;
+
 
 public class DateTimeField extends StringField {
 
@@ -28,7 +30,8 @@ public class DateTimeField extends StringField {
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
+        super.validate();
         new DateTime(super.getField());
     }
 

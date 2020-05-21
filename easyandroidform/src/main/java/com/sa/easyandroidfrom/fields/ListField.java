@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.exceptions.CompositeException;
 
 
 public class ListField<T> extends BaseField<List<T>>{
@@ -53,9 +54,10 @@ public class ListField<T> extends BaseField<List<T>>{
     }
 
     @Override
-    public void validate() throws Exception {
-        if(isMandatory() && isSet() && getField().isEmpty()){
-            throw new Exception("Mandatory list can't be empty");
+    public void validate() throws CompositeException {
+        super.validate();
+        if (isMandatory() && isSet() && getField().isEmpty()) {
+            throw new CompositeException(new Throwable("Mandatory list can't be empty"));
         }
     }
 

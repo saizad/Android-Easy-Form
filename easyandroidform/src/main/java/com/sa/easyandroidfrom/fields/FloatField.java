@@ -26,9 +26,4 @@ public class FloatField extends BaseField<Float> {
     protected boolean isFieldValueModified(@NonNull Float field, @NonNull Float ogField) {
         return field.compareTo(ogField) != 0;
     }
-
-    @Override
-    public void validate() throws Exception {
-
-    }
 }

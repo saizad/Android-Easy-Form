@@ -6,7 +6,12 @@ import androidx.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-public class Utils {
+import io.reactivex.exceptions.CompositeException;
+
+public final class Utils {
+
+    private Utils() {
+    }
 
     public static final String APP_DATE_FORMATTER = "yyyy-MM-dd";
     public static final String APP_TIME_FORMATTER = "h:mm:ss";
@@ -114,6 +119,14 @@ public class Utils {
                 return i + suffixes[i % 10];
 
         }
+    }
+
+    public static String compositeExceptionMessage(CompositeException e){
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (Throwable exception : e.getExceptions()) {
+            stringBuilder.append(exception.getMessage()).append("\n");
+        }
+        return StringUtils.stripTrailingLeadingNewLines(stringBuilder.toString());
     }
 
 }

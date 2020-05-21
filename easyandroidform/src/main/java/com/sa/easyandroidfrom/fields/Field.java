@@ -22,11 +22,6 @@ public class Field<F> extends BaseField<F> {
     }
 
     @Override
-    public void validate() throws Exception {
-
-    }
-
-    @Override
     protected boolean isFieldValueModified(@NonNull F field, @NonNull F ogField) {
         return isModified();
     }

@@ -6,8 +6,10 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
 import com.sa.easyandroidfrom.ObjectUtils;
+import com.sa.easyandroidfrom.Utils;
 
 import io.reactivex.Observable;
+import io.reactivex.exceptions.CompositeException;
 import io.reactivex.subjects.BehaviorSubject;
 
 import static com.sa.easyandroidfrom.ObjectUtils.isNotNull;
@@ -16,7 +18,7 @@ import static com.sa.easyandroidfrom.ObjectUtils.isNotNull;
 public abstract class BaseField<T> {
 
     private @Nullable
-    transient Exception validatedException;
+    transient CompositeException validatedException;
     private transient boolean mIsMandatory;
     private transient boolean isValueModified;
 
@@ -66,13 +68,13 @@ public abstract class BaseField<T> {
     public Observable<Pair<String, T>> nonEmptyInvalidObservable() {
         return setObservable()
                 .filter(o -> ObjectUtils.isNotNull(validatedException))
-                .map(__ -> new Pair<>(validatedException.getMessage(), getField()));
+                .map(__ -> new Pair<>(Utils.compositeExceptionMessage(validatedException), getField()));
     }
 
     public Observable<Pair<String, T>> invalidObservable() {
         return observable()
                 .filter(o -> ObjectUtils.isNotNull(validatedException))
-                .map(__ -> new Pair<>(validatedException.getMessage(), getField()));
+                .map(__ -> new Pair<>(Utils.compositeExceptionMessage(validatedException), getField()));
     }
 
     public Observable<T> notEmptyValidObservable() {
@@ -83,7 +85,7 @@ public abstract class BaseField<T> {
         return observable().filter(o -> ObjectUtils.isNull(field));
     }
 
-    public Observable<Pair<Boolean, Exception>> errorStateObservable() {
+    public Observable<Pair<Boolean, CompositeException>> errorStateObservable() {
         return observable().map(o -> new Pair<>(isValid, validatedException));
     }
 
@@ -112,14 +114,14 @@ public abstract class BaseField<T> {
     public T getField() {
         try {
             return requiredField();
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
     @NonNull
     public T requiredField() {
-        if(field == null){
+        if (field == null) {
             throw new IllegalStateException(fieldId + " has a null value");
         }
         return field;
@@ -136,6 +138,7 @@ public abstract class BaseField<T> {
         return ogField;
     }
 
+    @CallSuper
     public void publish() {
         isValid = __isValid();
         subject.onNext(ObjectUtils.coalesce(field, emptyObject));
@@ -168,22 +171,18 @@ public abstract class BaseField<T> {
             retValue = true;
         } else {
             try {
-                if(mIsMandatory && !isSet()){
-                    throw new Exception("Field is mandatory and value is not provided.");
-                }else {
-                    validate();
-                    retValue = true;
-                }
-            } catch (Exception e) {
+                validate();
+                retValue = true;
+            } catch (CompositeException e) {
                 validatedException = e;
             }
         }
 
-        if(field != null && ogField != null) {
+        if (field != null && ogField != null) {
             isValueModified = isFieldValueModified(field, ogField);
-        }else if(field == null && ogField == null){
+        } else if (field == null && ogField == null) {
             isValueModified = false;
-        }else if(ogField == null){
+        } else if (ogField == null) {
             isValueModified = true;
         }
 
@@ -200,5 +199,10 @@ public abstract class BaseField<T> {
 
     protected abstract boolean isFieldValueModified(@NonNull T field, @NonNull T ogField);
 
-    protected abstract void validate() throws Exception;
+    @CallSuper
+    public void validate() throws CompositeException{
+        if (mIsMandatory && !isSet()) {
+            throw new CompositeException(new Exception("Field is mandatory and value is not provided."));
+        }
+    }
 }

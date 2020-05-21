@@ -26,9 +26,4 @@ public class StringField extends BaseField<String> {
     protected boolean isFieldValueModified(@NonNull String field, @NonNull String ogField) {
         return field.compareTo(ogField) != 0;
     }
-
-    @Override
-    public void validate() throws Exception {
-
-    }
 }

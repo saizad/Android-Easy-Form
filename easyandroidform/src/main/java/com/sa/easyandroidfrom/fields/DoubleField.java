@@ -26,9 +26,4 @@ public class DoubleField extends BaseField<Double> {
     protected boolean isFieldValueModified(@NonNull Double field, @NonNull Double ogField) {
         return field.compareTo(ogField) != 0;
     }
-
-    @Override
-    public void validate() throws Exception {
-
-    }
 }

@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import org.joda.time.DateTime;
 
+import io.reactivex.exceptions.CompositeException;
+
 public class EndDateTimeField extends DateTimeField {
 
     private transient DateTimeField startDateTimeField;
@@ -26,11 +28,11 @@ public class EndDateTimeField extends DateTimeField {
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
         final DateTime startDateTimeField = this.startDateTimeField.dateTime();
         final DateTime dateTime = dateTime();
         if (startDateTimeField != null && dateTime != null && dateTime.isBefore(startDateTimeField)) {
-            throw new Exception("End date time can't start before start date time");
+            throw new CompositeException(new Exception("End date time can't start before start date time"));
         }
     }
 

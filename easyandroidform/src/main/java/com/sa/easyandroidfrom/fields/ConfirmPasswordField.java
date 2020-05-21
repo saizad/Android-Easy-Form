@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 
 import com.sa.easyandroidfrom.StringUtils;
 
+import io.reactivex.exceptions.CompositeException;
+
 public class ConfirmPasswordField extends PasswordField {
 
     private PasswordField passwordField;
@@ -19,11 +21,15 @@ public class ConfirmPasswordField extends PasswordField {
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
         super.validate();
+        if(passwordField == null){
+            throw new CompositeException(new Exception("Confirm Password can't be validated without providing password"));
+        }
+
         if (!StringUtils.isNullOrEmpty(passwordField.getField())) {
             if (!passwordField.getField().equals(getField())) {
-                throw new Exception("Password doesn't match");
+                throw new CompositeException(new Exception("Password doesn't match"));
             }
         }
     }

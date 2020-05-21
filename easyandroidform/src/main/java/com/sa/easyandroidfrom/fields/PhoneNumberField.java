@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.sa.easyandroidfrom.ObjectUtils;
 
+import io.reactivex.exceptions.CompositeException;
+
 
 public class PhoneNumberField extends NonEmptyStringField {
 
@@ -29,13 +31,14 @@ public class PhoneNumberField extends NonEmptyStringField {
     }
 
     private boolean isValid() {
-        return ObjectUtils.isNotNull(getField()) && getField().length() == length;
+        return (ObjectUtils.isNotNull(getField()) && getField().length() == length) || !isSet() && !isMandatory();
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
+        super.validate();
         if (!isValid()) {
-            throw new Exception("Mobile number should be " + length + " digits longer");
+            throw new CompositeException(new Exception("Mobile number should be " + length + " digits longer"));
         }
     }
 }

@@ -25,11 +25,6 @@ public class FileField extends BaseField<Uri> {
   }
 
   @Override
-  public void validate() throws Exception {
-
-  }
-
-  @Override
   protected boolean isFieldValueModified(@NonNull Uri field, @NonNull Uri ogField) {
     return field.toString().compareTo(ogField.toString()) != 0;
   }

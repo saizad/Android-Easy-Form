@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 import com.sa.easyandroidfrom.ObjectUtils;
 
+import io.reactivex.exceptions.CompositeException;
+
 
 public class MandatoryField<F> extends Field<F> {
 
@@ -17,9 +19,10 @@ public class MandatoryField<F> extends Field<F> {
     }
 
     @Override
-    public void validate() throws Exception {
+    public void validate() throws CompositeException {
+        super.validate();
         if (ObjectUtils.isNull(getField())) {
-            throw new Exception("Field is mandatory");
+            throw new CompositeException(new Exception("Field is mandatory"));
         }
     }
 }
