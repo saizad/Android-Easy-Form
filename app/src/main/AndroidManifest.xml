@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sa.easyandroidfrom.example">
+    package="com.sa.easyandroidform.example">
 
     <application
         android:allowBackup="true"
@@ -8,14 +8,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MixFormActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name="com.sa.easyandroidform.example.MixFormActivity"></activity>
+        <activity android:name="com.sa.easyandroidform.example.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MandatoryFormActivity" />
+        <activity android:name="com.sa.easyandroidform.example.MandatoryFormActivity" />
     </application>
 </manifest>

@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.sa.easyandroidfrom.example.StringInputFieldView
+            <com.sa.easyandroidform.example.StringInputFieldView
                 android:id="@+id/firstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.sa.easyandroidfrom.example.StringInputFieldView
+            <com.sa.easyandroidform.example.StringInputFieldView
                 android:id="@+id/lastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 app:layout_constraintTop_toBottomOf="@id/firstName" />
 
 
-            <com.sa.easyandroidfrom.example.StringInputFieldView
+            <com.sa.easyandroidform.example.StringInputFieldView
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 app:layout_constraintTop_toBottomOf="@id/lastName" />
 
 
-            <com.sa.easyandroidfrom.example.StringInputFieldView
+            <com.sa.easyandroidform.example.StringInputFieldView
                 android:id="@+id/mobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                 tools:visibility="visible" />
 
 
-            <com.sa.easyandroidfrom.example.StringInputFieldView
+            <com.sa.easyandroidform.example.StringInputFieldView
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dobError" />
 
-            <com.sa.easyandroidfrom.example.StringInputFieldView
+            <com.sa.easyandroidform.example.StringInputFieldView
                 android:id="@+id/confirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
