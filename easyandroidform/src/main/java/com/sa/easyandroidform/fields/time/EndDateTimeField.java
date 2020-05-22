@@ -38,7 +38,7 @@ public class EndDateTimeField extends DateTimeField {
         final DateTime dateTime = super.resolveToDateTime(dateString);
         final DateTime startDateTime = startDateTimeField.dateTime();
         if (startDateTime != null && dateTime.isBefore(startDateTime)) {
-            throw new ValidateDateException("End date time can't start before start date time");
+            throw new Exception("End date time can't start before start date time");
         }
         return dateTime;
     }

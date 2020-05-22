@@ -57,10 +57,4 @@ public class DateTimeField extends StringField {
     public final DateTime requiredDateTime() {
         return ObjectUtils.requireNonNull(dateTime);
     }
-
-    public static class ValidateDateException extends Exception {
-        public ValidateDateException(String message) {
-            super(message);
-        }
-    }
 }

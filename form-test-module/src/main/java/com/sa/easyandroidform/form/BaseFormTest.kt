@@ -25,13 +25,7 @@ abstract class BaseFormTest<F : FormModel<*>> {
     open fun mandatoryAddField(): BaseField<*> = MandatoryStringField("temp")
 
     @Test
-    internal fun allFieldsValid_True() {
-
-        assertTrue(form.isAllFieldsValid, "allFieldValidMandatoryForm should be set all field with valid value and be mandatory")
-    }
-
-    @Test
-    internal fun buildFormFail() {
+    open fun buildFormFail() {
         val formField = form.fields.firstOrNull()!!
         formField.field =
             invalidValue(formField)
@@ -40,30 +34,29 @@ abstract class BaseFormTest<F : FormModel<*>> {
     }
 
     @Test
-    internal fun buildFormSuccess() {
+    open fun buildFormSuccess() {
         val build = form.build()
         assertNotNull(build)
     }
 
     @Test
-    internal fun requiredBuild_Fail() {
+    open fun requiredBuild_Fail() {
         val formField = form.fields.firstOrNull()!!
-        formField.field =
-            invalidValue(formField)
+        formField.field = invalidValue(formField)
         assertThrows(IllegalStateException::class.java) {
             form.requiredBuild()
         }
     }
 
     @Test
-    internal fun requiredBuild_Success() {
+    open fun requiredBuild_Success() {
         assertDoesNotThrow {
             form.requiredBuild()
         }
     }
 
     @Test
-    internal fun errorCount_mandatory() {
+    open fun errorCount_mandatory() {
         val mandatory = form.fields.filter { it.isMandatory }
         mandatory.forEach {
             it.field = invalidValue(it)
@@ -73,7 +66,7 @@ abstract class BaseFormTest<F : FormModel<*>> {
     }
 
     @Test
-    internal fun errorCount_non_mandatory() {
+    open fun errorCount_non_mandatory() {
         val nonMandatory = form.fields.filter { !it.isMandatory }
         nonMandatory.forEach {
             it.field = invalidValue(it)
@@ -83,7 +76,7 @@ abstract class BaseFormTest<F : FormModel<*>> {
     }
 
     @Test
-    internal fun addFieldCountMatch() {
+    open fun addFieldCountMatch() {
         val prevSize = form.fields.size
         form.add(addField())
         val newSize = form.fields.size
@@ -91,31 +84,31 @@ abstract class BaseFormTest<F : FormModel<*>> {
     }
 
     @Test
-    internal fun addFieldValidForm() {
+    open fun addFieldValidForm() {
         form.add(addField())
         assertTrue(form.isFormValid)
     }
 
     @Test
-    internal fun addFieldInValidForm() {
+    open fun addFieldInValidForm() {
         form.add(mandatoryAddField())
         assertFalse(form.isFormValid)
     }
 
     @Test
-    internal fun getField_Failed() {
+    open fun getField_Failed() {
         form.add(mandatoryAddField())
         assertNull(form.getField<BaseField<*>>("akaldsj"))
     }
 
     @Test
-    internal fun getField_Success() {
+    open fun getField_Success() {
         form.add(mandatoryAddField())
         assertNotNull(form.getField<BaseField<*>>("temp"))
     }
 
     @Test
-    internal fun requiredField_Failed() {
+    open fun requiredField_Failed() {
         form.add(mandatoryAddField())
         assertThrows(IllegalStateException::class.java) {
             form.requiredField<BaseField<*>>("akaldsj")
@@ -123,7 +116,7 @@ abstract class BaseFormTest<F : FormModel<*>> {
     }
 
     @Test
-    internal fun requiredField_Success() {
+    open fun requiredField_Success() {
         form.add(mandatoryAddField())
         assertDoesNotThrow {
             form.requiredField<BaseField<*>>("temp")
@@ -131,7 +124,7 @@ abstract class BaseFormTest<F : FormModel<*>> {
     }
 
     @Test
-    open fun isSet_False(){
+    open fun isSet_False() {
         form.fields.forEach {
             it.field = null
         }
@@ -139,7 +132,57 @@ abstract class BaseFormTest<F : FormModel<*>> {
     }
 
     @Test
-    internal fun isSet_True(){
+    open fun isSet_True() {
         assertTrue(form.isSet)
+    }
+
+    @Test
+    open fun requiredField__throws() {
+        assertThrows(UnsupportedOperationException::class.java) {
+            form.requiredField()
+        }
+    }
+
+    @Test
+    open fun getField__throws() {
+        assertThrows(UnsupportedOperationException::class.java) {
+            form.getField()
+        }
+    }
+
+    @Test
+    open fun isFormModified__false() {
+        val formField = form.fields.random()
+        formField.field = invalidValue(formField)
+        assertFalse(form.isFormModified)
+    }
+
+    @Test
+    open fun isFormModified__true() {
+        assertTrue(form.isFormModified)
+    }
+
+    @Test
+    open fun isAllFieldsValid__false() {
+        val formField = form.fields.random()
+        formField.field = invalidValue(formField)
+        assertFalse(form.isAllFieldsValid)
+    }
+
+    @Test
+    open fun isAllFieldsValid__true() {
+        assertTrue(form.isAllFieldsValid)
+    }
+
+    @Test
+    open fun isAllMandatoryFieldsProvided__false() {
+        val formField = form.fields.filter { it.isMandatory }.random()
+        formField.field = invalidValue(formField)
+        assertFalse(form.isAllMandatoryFieldsProvided)
+    }
+
+    @Test
+    open fun isAllMandatoryFieldsProvided__true() {
+        assertTrue(form.isAllMandatoryFieldsProvided)
     }
 }

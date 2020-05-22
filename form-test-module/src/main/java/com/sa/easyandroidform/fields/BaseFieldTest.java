@@ -3,7 +3,6 @@ package com.sa.easyandroidform.fields;
 import androidx.annotation.NonNull;
 
 import com.sa.easyandroidform.ObservablesCall;
-import com.sa.easyandroidform.fields.BaseField;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

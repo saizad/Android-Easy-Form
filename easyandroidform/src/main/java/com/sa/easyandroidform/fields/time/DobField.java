@@ -31,7 +31,7 @@ public class DobField extends PastDateField {
         final DateTime dateTime = super.resolveToDateTime(dateString);
         final DateTime currentDateTime = new DateTime();
         if (dateTime.plusYears(minAge).isAfter(currentDateTime)) {
-            throw new ValidateDateException("Minimum age required is " + minAge);
+            throw new Exception("Minimum age required is " + minAge);
         }
         return dateTime;
     }

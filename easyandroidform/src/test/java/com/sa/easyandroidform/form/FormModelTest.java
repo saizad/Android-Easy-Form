@@ -17,14 +17,13 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-public class FormModelTest<M extends FormModelTest.ModelClass> extends BaseFormTest<FormModelTest.ModelClass.Form<M>> {
+public class FormModelTest<M extends FormModelTest.ModelClass> extends BaseFormTestJava<FormModelTest.ModelClass.Form<M>> {
 
     @NotNull
     @Override
     public ModelClass.Form<M> initForm() {
         return new ModelClass.Form<>();
     }
-
 
     public static class ModelClass {
 

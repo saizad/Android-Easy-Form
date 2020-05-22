@@ -78,7 +78,9 @@ public abstract class FormModel<T> extends Field<T> {
 
     @CallSuper
     @Override
-    public void validate() throws CompositeException {List<CompositeException> exceptions = new ArrayList<>();
+    public void validate() throws CompositeException {
+        super.validate();
+        List<CompositeException> exceptions = new ArrayList<>();
         for (BaseField field : fields) {
             try {
                 field.validate();

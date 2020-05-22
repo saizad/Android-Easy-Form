@@ -6,8 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
-abstract public class BaseFieldFormTest<F extends FormModel<?>> extends BaseFormTest<F> {
-
+abstract public class BaseFieldFormTest<F extends FormModel<?>> extends BaseFormTestJava<F> {
 
     @Nullable
     @Override
@@ -19,7 +18,6 @@ abstract public class BaseFieldFormTest<F extends FormModel<?>> extends BaseForm
     }
 
     @Test
-    @Override
     public void isSet_False() {
         for (BaseField<?> field : form.fields) {
             if(field instanceof FormModel){
