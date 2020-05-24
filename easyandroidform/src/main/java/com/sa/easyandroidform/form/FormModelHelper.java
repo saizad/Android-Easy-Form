@@ -10,13 +10,13 @@ import java.util.Arrays;
 
 public class FormModelHelper extends FormModel<Object> {
 
-  public FormModelHelper(BaseField... list) {
+  public FormModelHelper(BaseField<?>... list) {
     super(new ArrayList<>(Arrays.asList(list)));
   }
 
   @NonNull
   @Override
   protected Object buildForm() {
-    return null;
+    return new Object();
   }
 }

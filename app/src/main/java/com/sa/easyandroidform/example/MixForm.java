@@ -50,14 +50,14 @@ public class MixForm extends MandatoryForm {
                     new ConfirmPasswordField("Confirm Password")
             )));
 
-            firstNameField = (MandatoryStringField) getField("firstname");
-            lastNameField = (MandatoryStringField) getField("lastname");
-            emailField = (EmailField) getField("email");
-            mobileNumberField = (PhoneNumberField) getField("MobileNumber");
-            dobField = (DobField) getField("dob");
-            genderField = (GenderField) getField("gender");
-            passwordField = (PasswordField) getField("password");
-            confirmPasswordField = (ConfirmPasswordField) getField("Confirm Password");
+            firstNameField = (MandatoryStringField) findField("firstname");
+            lastNameField = (MandatoryStringField) findField("lastname");
+            emailField = (EmailField) findField("email");
+            mobileNumberField = (PhoneNumberField) findField("MobileNumber");
+            dobField = (DobField) findField("dob");
+            genderField = (GenderField) findField("gender");
+            passwordField = (PasswordField) findField("password");
+            confirmPasswordField = (ConfirmPasswordField) findField("Confirm Password");
             confirmPasswordField.setRelated(passwordField);
         }
 

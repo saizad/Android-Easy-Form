@@ -25,7 +25,6 @@ public class ListField<T> extends BaseField<List<T>>{
 
     public ListField(@NonNull String fieldId, @Nullable List<T> ogField, boolean isMandatory) {
         super(fieldId, ogField, isMandatory);
-        setField(ogField);
     }
 
     @Override

@@ -27,7 +27,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
         field.observable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (ObjectUtils.isNotNull(field.field) && !field.isFieldValid) {
+                if (ObjectUtils.isNotNull(field.field) && !field.isValid) {
                     error()
                 } else if (field.isModified) {
                     edited()
@@ -40,7 +40,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { pair ->
                 showValue(field.field)
-                displayError(!field.isFieldValid, pair.first)
+                displayError(!field.isValid, pair.first)
             }
 
         Observable.merge<Any>(
@@ -60,7 +60,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
     }
 
     fun updateValue(value: F?) {
-        fieldItem.field = value
+        fieldItem.setField(value)
     }
 
     abstract fun fieldMandatory()

@@ -30,14 +30,14 @@ public class PhoneNumberField extends NonEmptyStringField {
         publish();
     }
 
-    private boolean isValid() {
+    private boolean isPhoneNumberValid() {
         return (ObjectUtils.isNotNull(getField()) && getField().length() == length) || !isSet() && !isMandatory();
     }
 
     @Override
     public void validate() throws CompositeException {
         super.validate();
-        if (!isValid()) {
+        if (!isPhoneNumberValid()) {
             throw new CompositeException(new Exception("Mobile number should be " + length + " digits longer"));
         }
     }

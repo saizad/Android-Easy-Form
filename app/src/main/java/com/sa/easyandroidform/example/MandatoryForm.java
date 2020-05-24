@@ -34,10 +34,10 @@ public class MandatoryForm {
         public Form() {
             super(Arrays.asList(new MandatoryStringField("firstname"), new MandatoryStringField("lastname"), new EmailField("email", true), new PhoneNumberField("mobilenumber",true, 10)));
 
-            firstNameField = (MandatoryStringField) getField("firstname");
-            lastNameField = (MandatoryStringField) getField("lastname");
-            emailField = (EmailField) getField("email");
-            mobileNumberField = (PhoneNumberField) getField("mobilenumber");
+            firstNameField = (MandatoryStringField) findField("firstname");
+            lastNameField = (MandatoryStringField) findField("lastname");
+            emailField = (EmailField) findField("email");
+            mobileNumberField = (PhoneNumberField) findField("mobilenumber");
         }
 
         @NonNull

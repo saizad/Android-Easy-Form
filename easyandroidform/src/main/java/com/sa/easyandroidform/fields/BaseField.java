@@ -19,8 +19,8 @@ public abstract class BaseField<T> {
 
     private @Nullable
     transient CompositeException validatedException;
-    private transient boolean mIsMandatory;
-    private transient boolean isValueModified;
+    private transient boolean isMandatory;
+    private transient Boolean isValueModified;
 
     @NonNull
     private transient final String fieldId;
@@ -32,7 +32,7 @@ public abstract class BaseField<T> {
     private @Nullable
     T field;
     private final static String EMPTY_NETWORK_ERROR_MESSAGE = "--empty---";
-    private transient boolean isValid = false;
+    private transient Boolean isValid;
 
     public BaseField(@NonNull String fieldId) {
         this(fieldId, null, false);
@@ -47,10 +47,11 @@ public abstract class BaseField<T> {
     }
 
     public BaseField(@NonNull String fieldId, @Nullable T ogField, boolean isMandatory) {
-        mIsMandatory = isMandatory;
+        this.isMandatory = isMandatory;
         this.fieldId = fieldId;
         this.ogField = ogField;
-        setField(ogField);
+        this.field = ogField;
+        subject.onNext(ObjectUtils.coalesce(field, emptyObject));
     }
 
     public Observable<Object> observable() {
@@ -86,7 +87,7 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Pair<Boolean, CompositeException>> errorStateObservable() {
-        return observable().map(o -> new Pair<>(isValid, validatedException));
+        return observable().map(o -> new Pair<>(isValid(), validatedException));
     }
 
     public Observable<Boolean> modifiedObservable() {
@@ -94,14 +95,14 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Boolean> isValueModifiedObservable() {
-        return observable().map(o -> isValueModified);
+        return observable().map(o -> hasValueChanged());
     }
 
     public Observable<String> networkError() {
         return networkErrorSubject.filter(s -> !s.equals(EMPTY_NETWORK_ERROR_MESSAGE));
     }
 
-    public final boolean isModified() {
+    public boolean isModified() {
         //TODO BUG if ogField was null then it shouldn't equate to modifed
         return ogField != field;
     }
@@ -128,6 +129,11 @@ public abstract class BaseField<T> {
     }
 
     @CallSuper
+    public void clear() {
+        setField(null);
+    }
+
+    @CallSuper
     public void setField(@Nullable T value) {
         field = value;
         publish();
@@ -140,9 +146,18 @@ public abstract class BaseField<T> {
 
     @CallSuper
     public void publish() {
-        isValid = __isValid();
+        __validateValue();
+        __publish();
+    }
+
+    private void __publish(){
         subject.onNext(ObjectUtils.coalesce(field, emptyObject));
         networkErrorSubject.onNext(EMPTY_NETWORK_ERROR_MESSAGE);
+    }
+
+    private void __validateValue(){
+        isValid = __isValidValidate();
+        isValueModified = __isFieldValueModifiedValidate();
     }
 
     public void networkErrorPublish(String error) {
@@ -154,20 +169,20 @@ public abstract class BaseField<T> {
         return fieldId;
     }
 
-    public boolean isMandatory() {
-        return mIsMandatory;
+    public final boolean isMandatory() {
+        return isMandatory;
     }
 
     public void setIsMandatory(boolean mIsMandatory) {
-        this.mIsMandatory = mIsMandatory;
+        this.isMandatory = mIsMandatory;
         publish();
     }
 
-    private boolean __isValid() {
+    private boolean __isValidValidate() {
         validatedException = null;
         boolean retValue = false;
 
-        if (!mIsMandatory && ObjectUtils.isNull(field)) {
+        if (!isMandatory && ObjectUtils.isNull(field)) {
             retValue = true;
         } else {
             try {
@@ -177,23 +192,28 @@ public abstract class BaseField<T> {
                 validatedException = e;
             }
         }
-
-        if (field != null && ogField != null) {
-            isValueModified = isFieldValueModified(field, ogField);
-        } else if (field == null && ogField == null) {
-            isValueModified = false;
-        } else if (ogField == null) {
-            isValueModified = true;
-        }
-
         return retValue;
     }
 
-    public final boolean isFieldValid() {
+    private boolean __isFieldValueModifiedValidate(){
+        if (field != null && ogField != null) {
+            return isFieldValueModified(field, ogField);
+        } else if (field == null && ogField == null) {
+            return false;
+        } else return ogField == null;
+    }
+
+    public boolean isValid() {
+        if(isValid == null){
+            __validateValue();
+        }
         return isValid;
     }
 
-    public final boolean hasValueChanged() {
+    public boolean hasValueChanged() {
+        if(isValueModified == null){
+            __validateValue();
+        }
         return isValueModified;
     }
 
@@ -201,8 +221,8 @@ public abstract class BaseField<T> {
 
     @CallSuper
     public void validate() throws CompositeException{
-        if (mIsMandatory && !isSet()) {
-            throw new CompositeException(new Exception("Field is mandatory and value is not provided."));
+        if (isMandatory && !isSet()) {
+            throw new CompositeException(new Exception(fieldId +" field is mandatory and value is not provided."));
         }
     }
 }

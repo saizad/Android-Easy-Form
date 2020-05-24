@@ -38,7 +38,7 @@ public class ObservablesCall {
     }
 
     public static void isFieldValid(BaseField<?> field) {
-        assertFalse(field.isFieldValid());
+        assertFalse(field.isValid());
     }
 
     public static void errorState(BaseField<?> field, boolean state) {

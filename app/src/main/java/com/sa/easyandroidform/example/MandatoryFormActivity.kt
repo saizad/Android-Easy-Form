@@ -17,7 +17,7 @@ class MandatoryFormActivity : AppCompatActivity() {
         email.setField(form.emailField)
         mobileNumber.setField(form.mobileNumberField)
 
-        form.isAllFieldValidObservable
+        form.isValidObservable
             .subscribe {
                 save.isEnabled = it
             }

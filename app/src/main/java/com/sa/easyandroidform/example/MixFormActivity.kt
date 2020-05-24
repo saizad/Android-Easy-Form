@@ -26,7 +26,7 @@ class MixFormActivity : AppCompatActivity() {
         val toList = Gender.ToList.getList()
         Utils.initChipGroup(gender, form.genderField.field, toList) {
             val chip = it as Chip
-            form.genderField.field = chip.text.toString()
+            form.genderField.setField(chip.text.toString())
         }
 
         form.dobField
@@ -38,7 +38,7 @@ class MixFormActivity : AppCompatActivity() {
         form.dobField.setObservable()
             .subscribe {
                 dob.text = it
-                Utils.switchVisibility(dobError, !form.dobField.isFieldValid)
+                Utils.switchVisibility(dobError, !form.dobField.isValid)
             }
 
         dob.setOnClickListener {
@@ -46,11 +46,11 @@ class MixFormActivity : AppCompatActivity() {
             DatePickerDialog(this, { view, year1, month1, dayOfMonth ->
                 val month = month1 + 1
                 val str = "$year1-$month-$dayOfMonth"
-                form.dobField.field = str
+                form.dobField.setField(str)
             }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth).show()
         }
 
-        form.isAllFieldValidObservable
+        form.isValidObservable
             .subscribe {
                 save.isEnabled = it
             }

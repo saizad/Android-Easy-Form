@@ -3,58 +3,82 @@ package com.sa.easyandroidform.form;
 
 import androidx.annotation.NonNull;
 
+import com.sa.easyandroidform.TestUtils;
 import com.sa.easyandroidform.fields.BaseField;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.sa.easyandroidform.TestUtils.fomModelSetValue;
 
 public class FieldFormTest extends BaseFieldFormTest<FieldFormTest.FieldModelClass.Form<FieldFormTest.FieldModelClass>> {
 
     @NotNull
     @Override
-    public FieldModelClass.Form initForm() {
-        return new FieldModelClass.Form();
+    public FieldModelClass.Form<FieldFormTest.FieldModelClass> initForm() {
+        return new FieldModelClass.Form<>();
     }
 
+    @Override
+    void setValidValue(BaseField<?> field) {
+        if(field instanceof FormModel){
+            fomModelSetValue((FormModel<?>) field);
+        }else {
+            TestUtils.setRandom(field);
+        }
+    }
+
+    @Override
+    BaseField<?> changeFormFieldToAnyValue() {
+        TestUtils.setRandom(form.mandatoryModelClassField.floatField);
+        return form.mandatoryModelClassField;
+    }
 
     public static class FieldModelClass extends FormModelTest.ModelClass {
 
-        public final FormModelTest.ModelClass modelClass;
+        public final FormModelTest.ModelClass mandatoryModelClass;
+        public FormModelTest.ModelClass modelClass;
 
-        public FieldModelClass(FormModelTest.ModelClass fieldModelClass, FormModelTest.ModelClass baseClass) {
+        public FieldModelClass(FormModelTest.ModelClass mandatoryModelClass, FormModelTest.ModelClass baseClass) {
             super(baseClass);
-            this.modelClass = fieldModelClass;
+            this.mandatoryModelClass = mandatoryModelClass;
         }
 
         public static class Form<M extends FieldModelClass> extends FormModelTest.ModelClass.Form<M> {
 
-            public final FormModelTest.ModelClass.Form<FieldModelClass> modelClassField = requiredField("model-class");
+            private static final String MODEL_CLASS_FIELD_NAME = "model-class";
+            private static final String MANDATORY_MODEL_CLASS_FIELD_NAME = "mandatory-model-class";
 
-            public Form(String formName, boolean isMandatory, ArrayList<BaseField> fields) {
-                super(formName, isMandatory, new ArrayList<BaseField>() {{
+            public final FormModelTest.ModelClass.Form<FieldModelClass> modelClassField = requiredFindField(MODEL_CLASS_FIELD_NAME);
+
+            public final FormModelTest.ModelClass.Form<FieldModelClass> mandatoryModelClassField = requiredFindField(MANDATORY_MODEL_CLASS_FIELD_NAME);
+
+            public Form(String formName, ArrayList<BaseField<?>> fields) {
+                super(formName, new ArrayList<BaseField<?>>() {{
                     addAll(fields);
                     addAll(fields());
                 }});
             }
 
             private Form() {
-                this("field-form", false);
+                this("field-form");
             }
 
-            public Form(ArrayList<BaseField> fields) {
-                this("field-form", false, fields);
+            public Form(ArrayList<BaseField<?>> fields) {
+                this("field-form", fields);
             }
 
-            public Form(String formName, boolean isMandatory) {
-                super(formName, isMandatory, new ArrayList<>(fields()));
+            public Form(String formName) {
+                super(formName, new ArrayList<>(fields()));
             }
 
             private static List<BaseField<?>> fields() {
-                return Collections.singletonList(
-                        new FormModelTest.ModelClass.Form<>("model-class", true)
+                return Arrays.asList(
+                        new FormModelTest.ModelClass.Form<>(MODEL_CLASS_FIELD_NAME),
+                        new FormModelTest.ModelClass.Form<>(MANDATORY_MODEL_CLASS_FIELD_NAME)
                 );
             }
 
@@ -62,7 +86,9 @@ public class FieldFormTest extends BaseFieldFormTest<FieldFormTest.FieldModelCla
             @Override
             protected M buildForm() {
                 final FormModelTest.ModelClass buildForm = super.buildForm();
-                return (M) new FieldModelClass(modelClassField.requiredBuild(), buildForm);
+                final M m = (M) new FieldModelClass(mandatoryModelClassField.requiredBuild(), buildForm);
+                m.modelClass = modelClassField.requiredBuild();
+                return m;
             }
         }
     }

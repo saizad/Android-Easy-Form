@@ -1,16 +1,16 @@
 package com.sa.easyandroidform.form;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sa.easyandroidform.ErrorField;
+import com.sa.easyandroidform.KotlinUtilsKt;
 import com.sa.easyandroidform.fields.BaseField;
 import com.sa.easyandroidform.fields.Field;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -18,36 +18,63 @@ import io.reactivex.exceptions.CompositeException;
 
 public abstract class FormModel<T> extends Field<T> {
 
-    public final transient List<BaseField> fields;
-    private final transient Observable<Object> allFieldObservable;
+    public final transient List<BaseField<?>> fields;
+    private final transient Observable<BaseField<?>> allFieldObservable;
 
-    public FormModel(ArrayList<BaseField> fields) {
+    private static boolean isMandatory(List<BaseField<?>> fields){
+        for (BaseField field : fields) {
+            if(field.isMandatory()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public FormModel(ArrayList<BaseField<?>> fields) {
         this("form", fields);
     }
 
-    public FormModel(@NonNull String fieldId, ArrayList<BaseField> fields) {
-        this(fieldId, false, fields);
-    }
-
-    public FormModel(String fieldId, boolean isMandatory, ArrayList<BaseField> fields) {
-        super(fieldId, isMandatory);
+    public FormModel(String fieldId, ArrayList<BaseField<?>> fields) {
+        super(fieldId, isMandatory(KotlinUtilsKt.checkForDuplicateFieldName(fields)));
         this.fields = fields;
-        List<Observable<Object>> list = new ArrayList<>();
-        for (BaseField field : fields) {
-            list.add(field.observable());
+        List<Observable<BaseField<?>>> list = new ArrayList<>();
+        for (BaseField<?> field : fields) {
+            list.add(buildFieldObservable(field));
         }
         allFieldObservable = Observable.merge(list);
-        super.setField(null);
     }
 
-    public void add(BaseField field) {
-        fields.add(field);
-        allFieldObservable.mergeWith(field.observable());
+
+    public void add(BaseField<?>... addFields) {
+        KotlinUtilsKt.checkForDuplicateFieldName(new ArrayList<BaseField<?>>(){
+            {
+                addAll(fields);
+                addAll(Arrays.asList(addFields));
+            }
+        });
+
+        fields.addAll(Arrays.asList(addFields));
+        for (BaseField<?> addField : addFields) {
+            allFieldObservable.mergeWith(buildFieldObservable(addField));
+        }
+    }
+
+    private Observable<BaseField<?>> buildFieldObservable(BaseField<?> field){
+        return field.observable().map(__ -> field);
+    }
+
+    @Override
+    public Observable<Object> observable() {
+        List<Observable<BaseField<?>>> list = new ArrayList<>();
+        for (BaseField<?> field : fields) {
+            list.add(buildFieldObservable(field));
+        }
+        return Observable.merge(list);
     }
 
     @NonNull
-    public final <F extends BaseField> F requiredField(String fieldName) {
-        for (BaseField field : fields) {
+    public final <F extends BaseField<?>> F requiredFindField(String fieldName) {
+        for (BaseField<?> field : fields) {
             if (field.getFieldId().equalsIgnoreCase(fieldName)) {
                 return (F) field;
             }
@@ -56,24 +83,20 @@ public abstract class FormModel<T> extends Field<T> {
     }
 
     @Nullable
-    public final <F extends BaseField> F getField(String fieldName) {
+    public final <F extends BaseField<?>> F findField(String fieldName) {
         try {
-            return requiredField(fieldName);
+            return requiredFindField(fieldName);
         } catch (Exception e) {
             return null;
         }
     }
 
+    @Override
     public final void publish() {
-        super.publish();
         for (BaseField field : fields) {
             field.publish();
         }
-    }
-
-    @Override
-    protected boolean isFieldValueModified(@NonNull T field, @NonNull T ogField) {
-        return isFormModified();
+        super.publish();
     }
 
     @CallSuper
@@ -93,7 +116,8 @@ public abstract class FormModel<T> extends Field<T> {
         }
     }
 
-    public final boolean isFormModified() {
+    @Override
+    public boolean isModified() {
         for (BaseField field : fields) {
             if (field.isModified()) {
                 return true;
@@ -102,57 +126,41 @@ public abstract class FormModel<T> extends Field<T> {
         return false;
     }
 
-    public final boolean isAllFieldsValid() {
+    @Override
+    public boolean isValid() {
         for (BaseField field : fields) {
-            if (!field.isFieldValid()) {
+            if (!field.isValid()) {
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean hasValueChanged() {
+        for (BaseField field : fields) {
+            if (field.hasValueChanged()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public final boolean isAllMandatoryFieldsProvided() {
         for (BaseField field : fields) {
-            if (field.isMandatory() && !field.isFieldValid()) {
+            if (field.isMandatory() && !field.isValid()) {
                 return false;
             }
         }
         return true;
     }
 
-    public final boolean isFormValid() {
+    @Override
+    public void clear() {
         for (BaseField field : fields) {
-            if (!field.isFieldValid()) {
-                return false;
-            }
+            field.clear();
         }
-        return true;
-    }
-
-    public int getMissingMandatoryCount() {
-        int count = 0;
-        for (BaseField field : fields) {
-            if (field.isMandatory() && !field.isFieldValid()) {
-                count += 1;
-            }
-        }
-        return count;
-    }
-
-    public int getMandatoryCompletedCount() {
-        int count = 0;
-        for (BaseField field : fields) {
-            if (field.isMandatory() && field.isFieldValid()) {
-                count += 1;
-            }
-        }
-        return count;
-    }
-
-    public final void clearForm() {
-        for (BaseField field : fields) {
-            field.setField(null);
-        }
+        super.clear();
     }
 
     public final Observable<Boolean> formModified() {
@@ -160,18 +168,18 @@ public abstract class FormModel<T> extends Field<T> {
     }
 
     public final Observable<Boolean> formModifiedValid() {
-        return allFieldObservable.map(o -> isModified() && isAllFieldsValid());
+        return allFieldObservable.map(o -> isModified() && isValid());
     }
 
-    public final Observable<Boolean> isAllFieldValidObservable() {
-        return allFieldObservable.map(o -> isAllFieldsValid());
+    public final Observable<Boolean> isValidObservable() {
+        return allFieldObservable.map(o -> isValid());
     }
 
     public final Observable<Boolean> validFormObservable() {
-        return isAllFieldValidObservable().filter(__ -> __);
+        return isValidObservable().filter(__ -> __);
     }
 
-    public final Observable<Object> formEdited() {
+    public final Observable<BaseField<?>> formEdited() {
         return allFieldObservable;
     }
 
@@ -197,20 +205,19 @@ public abstract class FormModel<T> extends Field<T> {
 
     @Nullable
     @Override
-    public T getField() {
+    public final T getField() {
         throw new UnsupportedOperationException("Call getField is supported on Form Field");
     }
 
     @NonNull
     @Override
-    public T requiredField() {
+    public final T requiredField() {
         throw new UnsupportedOperationException("Call requiredField is supported on Form Field");
     }
 
-    @SuppressLint("MissingSuperCall")
     @Override
-    public void setField(@Nullable T value) {
-
+    public final void setIsMandatory(boolean mIsMandatory) {
+        throw new UnsupportedOperationException("Call setIsMandatory is supported on Form Field");
     }
 
     public List<ErrorField> errors() {
@@ -233,5 +240,17 @@ public abstract class FormModel<T> extends Field<T> {
             }
         }
         return false;
+    }
+
+    public int size(){
+        int size = 0;
+        for (BaseField<?> field : fields) {
+            if(field instanceof FormModel){
+                size += ((FormModel<?>) field).size();
+            }else {
+                size += 1;
+            }
+        }
+        return size;
     }
 }

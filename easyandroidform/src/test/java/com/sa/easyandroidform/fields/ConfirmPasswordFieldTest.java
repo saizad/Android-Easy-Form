@@ -23,14 +23,14 @@ public class ConfirmPasswordFieldTest extends BasePasswordFieldTest {
     public void password_matches(){
         passwordField.setField(NEW_VALUE);
         field.setField(NEW_VALUE);
-        Assertions.assertTrue(field.isFieldValid());
+        Assertions.assertTrue(field.isValid());
     }
 
     @Test
     public void password_matches_fail(){
         passwordField.setField(NEW_VALUE);
         field.setField(RANDOM_VALUE);
-        Assertions.assertFalse(field.isFieldValid());
+        Assertions.assertFalse(field.isValid());
     }
 
     @Test

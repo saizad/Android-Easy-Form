@@ -66,13 +66,13 @@ public abstract class BaseListFieldTest<F> extends BaseFieldTest<List<F>> {
     @Test
     final void mandatory_empty_true() {
         mandatoryField.setField(getNewValidFieldValue());
-        assertTrue(mandatoryField.isFieldValid());
+        assertTrue(mandatoryField.isValid());
     }
 
     @Test
     final void mandatory_empty_false() {
         mandatoryField.setField(Collections.emptyList());
-        assertFalse(mandatoryField.isFieldValid());
+        assertFalse(mandatoryField.isValid());
     }
 
     @Test

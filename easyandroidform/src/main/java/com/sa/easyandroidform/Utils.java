@@ -1,10 +1,14 @@
 package com.sa.easyandroidform;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+import com.sa.easyandroidform.fields.BaseField;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import io.reactivex.exceptions.CompositeException;
 
@@ -12,10 +16,6 @@ public final class Utils {
 
     private Utils() {
     }
-
-    public static final String APP_DATE_FORMATTER = "yyyy-MM-dd";
-    public static final String APP_TIME_FORMATTER = "h:mm:ss";
-    public static final String APP_TIME_FORMATTER_24_HOURS = "H:mm:ss";
 
     @NonNull
     public static DateTime parseTime(@NonNull String time) throws Exception {
@@ -30,97 +30,6 @@ public final class Utils {
         return dateTime;
     }
 
-    @Nullable
-    public static String parseDateLong(@Nullable Long date) {
-        return parseDateLong(date, APP_DATE_FORMATTER);
-    }
-
-    @Nullable
-    public static String parseDateLong(@Nullable Long date, String formatter) {
-        if (date != null) {
-            DateTime dateTime = new DateTime(date);
-            return dateTime.toString(formatter);
-        }
-        return null;
-    }
-
-    @NonNull
-    public static DateTime parseDateToDateTime(@NonNull String date) {
-        return DateTime.parse(date);
-    }
-
-    @NonNull
-    public static DateTime parseDateTime(@NonNull String date) {
-        return parseDateToDateTime(date);
-    }
-
-    @NonNull
-    public static Long parseDate(@NonNull String date) {
-        return parseDateToDateTime(date).getMillis();
-    }
-
-    public static boolean isSameDay(@NonNull String date, @NonNull String date1) {
-        return isSameDay(parseDate(date), parseDate(date1));
-    }
-
-    public static boolean isSameDay(@Nullable Long date, @Nullable Long date1) {
-        if (ObjectUtils.isNull(date) || ObjectUtils.isNull(date1)) {
-            return false;
-        }
-        DateTime dateTime = new DateTime(date);
-        DateTime dateTime1 = new DateTime(date1);
-
-        return isSameDay(dateTime, dateTime1);
-    }
-
-    public static boolean isDateInBetween(@Nullable String startDate, @Nullable String endDate, @NonNull Long date) {
-        if (ObjectUtils.isNull(startDate) && ObjectUtils.isNull(endDate)) {
-            return false;
-        }
-
-        if (ObjectUtils.isNull(startDate)) {
-            return isSameDay(parseDate(endDate), date);
-        }
-
-        if (ObjectUtils.isNull(endDate)) {
-            return isSameDay(parseDate(startDate), date);
-        }
-
-        final Long startTime = parseDate(startDate);
-        final Long endTime = parseDate(endDate);
-
-        return startTime <= date && endTime >= date;
-    }
-
-    public static boolean isSameDay(@NonNull DateTime date, @NonNull DateTime date1) {
-        return DateTime.parse(date.toString(APP_DATE_FORMATTER)).getMillis() == DateTime.parse(date1.toString(APP_DATE_FORMATTER)).getMillis();
-    }
-
-    public static boolean isToday(DateTime time) {
-        return LocalDate.now().compareTo(new LocalDate(time)) == 0;
-    }
-
-    public static boolean isTomorrow(DateTime time) {
-        return LocalDate.now().plusDays(1).compareTo(new LocalDate(time)) == 0;
-    }
-
-    public static boolean isYesterday(DateTime time) {
-        return LocalDate.now().minusDays(1).compareTo(new LocalDate(time)) == 0;
-    }
-
-    public static String ordinal(int i) {
-        String[] suffixes = new String[]{"th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"};
-        switch (i % 100) {
-            case 11:
-            case 12:
-            case 13:
-                return i + "th";
-            default:
-                return i + suffixes[i % 10];
-
-        }
-    }
-
     public static String compositeExceptionMessage(CompositeException e){
         final StringBuilder stringBuilder = new StringBuilder();
         for (Throwable exception : e.getExceptions()) {
@@ -128,5 +37,38 @@ public final class Utils {
         }
         return StringUtils.stripTrailingLeadingNewLines(stringBuilder.toString());
     }
+
+    public static List<BaseField<?>> checkForDuplicateFieldName(List<BaseField<?>> list) throws Exception {
+        final List<BaseField<?>> duplicates = ListUtils.checkForDuplicate(list, (baseField1, baseField2) ->
+                baseField1.getFieldId().equals(baseField2.getFieldId()));
+        if(!duplicates.isEmpty()){
+            throw new Exception("Duplicate fieldIds" + listToString(duplicates, BaseField::getFieldId));
+        }
+        return list;
+    }
+
+    public static <T> String listToString(List<T> list, Func1<T, String> func1){
+        StringBuilder sb = new StringBuilder();
+        for (String s : ListUtils.extractValue(list, func1)) {
+            sb.append(", ").append(s);
+        }
+        return "[" + sb.toString().replaceFirst(", ", "") + "]";
+    }
+
+    public static  <T> T randomListItem(List<T> list){
+        return list.get(new Random().nextInt(Math.max(0, list.size() - 1)));
+    }
+
+    public static <T> List<T> filter(List<T> target, IPredicate<T> predicate) {
+        List<T> result = new ArrayList<>();
+        for (T element: target) {
+            if (predicate.apply(element)) {
+                result.add(element);
+            }
+        }
+        return result;
+    }
+
+    public interface IPredicate<T> { boolean apply(T type); }
 
 }

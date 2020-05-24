@@ -12,6 +12,7 @@ import io.reactivex.exceptions.CompositeException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -88,19 +89,19 @@ public abstract class BaseFieldTest<F> {
     @Test
     void mandatory_field_is_in_valid() {
         mandatoryField.setField(getInvalidFieldValue());
-        assertFalse(mandatoryField.isFieldValid());
+        assertFalse(mandatoryField.isValid());
     }
 
     @Test
     final void isFieldValid_false() {
         mandatoryField.setField(getInvalidFieldValue());
-        assertFalse(mandatoryField.isFieldValid());
+        assertFalse(mandatoryField.isValid());
     }
 
     @Test
     void isFieldValid_true() {
         field.setField(getNewValidFieldValue());
-        assertTrue(field.isFieldValid());
+        assertTrue(field.isValid());
     }
 
     @Test
@@ -251,4 +252,11 @@ public abstract class BaseFieldTest<F> {
         field.setIsMandatory(true);
         ObservablesCall.errorState(field, false);
     }
+
+    @Test
+    void clear__field_null(){
+        mandatoryOgField.clear();
+        assertNull(mandatoryOgField.getField());
+    }
+
 }

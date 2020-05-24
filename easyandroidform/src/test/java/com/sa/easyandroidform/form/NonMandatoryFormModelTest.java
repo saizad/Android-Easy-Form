@@ -8,18 +8,17 @@ import com.sa.easyandroidform.TestUtils;
 import com.sa.easyandroidform.fields.BaseField;
 import com.sa.easyandroidform.fields.BooleanField;
 import com.sa.easyandroidform.fields.FloatField;
-import com.sa.easyandroidform.fields.MandatoryIntegerField;
-import com.sa.easyandroidform.fields.MandatoryStringField;
+import com.sa.easyandroidform.fields.IntegerField;
+import com.sa.easyandroidform.fields.StringField;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static java.util.Arrays.asList;
 
-public class FormModelTest<M extends FormModelTest.ModelClass> extends BaseModelFormTest<FormModelTest.ModelClass.Form<M>> {
+public class NonMandatoryFormModelTest<M extends NonMandatoryFormModelTest.ModelClass> extends BaseModelFormTest<NonMandatoryFormModelTest.ModelClass.Form<M>> {
 
     @NotNull
     @Override
@@ -34,34 +33,25 @@ public class FormModelTest<M extends FormModelTest.ModelClass> extends BaseModel
 
     @Override
     BaseField<?> changeFormFieldToAnyValue() {
-        TestUtils.setRandom(form.floatField);
-        return form.floatField;
+        TestUtils.setRandom(form.integerField);
+        return form.integerField;
     }
 
     public static class ModelClass {
 
-        public final Integer integer;
-        public final String string;
+        public @Nullable
+        Integer integer;
+        public @Nullable
+        String string;
         public @Nullable
         Boolean aBoolean;
         public @Nullable
         Float aFloat;
 
-        public ModelClass(ModelClass modelClass) {
-            this(modelClass.integer, modelClass.string);
-            aFloat = modelClass.aFloat;
-            aBoolean = modelClass.aBoolean;
-        }
-
-        public ModelClass(Integer integer, String string) {
-            this.integer = integer;
-            this.string = string;
-        }
-
         public static class Form<M extends ModelClass> extends FormModel<M> {
 
-            public final MandatoryIntegerField mandatoryIntegerField = requiredFindField("integer");
-            public final MandatoryStringField mandatoryStringField = requiredFindField("string");
+            public final IntegerField integerField = requiredFindField("integer");
+            public final StringField stringField = requiredFindField("string");
             public final FloatField floatField = requiredFindField("float");
             public final BooleanField booleanField = requiredFindField("boolean");
 
@@ -84,9 +74,9 @@ public class FormModelTest<M extends FormModelTest.ModelClass> extends BaseModel
 
             private static List<BaseField<?>> fields() {
                 return asList(
-                        new MandatoryIntegerField("integer", new Random().nextInt(100)),
-                        new MandatoryStringField("string"),
-                        new FloatField("float", new Random().nextFloat()),
+                        new IntegerField("integer"),
+                        new StringField("string"),
+                        new FloatField("float"),
                         new BooleanField("boolean")
                 );
             }
@@ -94,9 +84,11 @@ public class FormModelTest<M extends FormModelTest.ModelClass> extends BaseModel
             @NonNull
             @Override
             protected M buildForm() {
-                final M m = (M) new ModelClass(mandatoryIntegerField.requiredField(), mandatoryStringField.requiredField());
+                final M m = (M) new ModelClass();
                 m.aBoolean = booleanField.getField();
                 m.aFloat = floatField.getField();
+                m.integer = integerField.getField();
+                m.string = stringField.getField();
                 return m;
             }
         }
