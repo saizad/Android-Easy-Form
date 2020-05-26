@@ -34,11 +34,13 @@ public class GenderField extends NonEmptyStringField {
     @Override
     public void validate() throws CompositeException {
         super.validate();
-        for (String gender : genders) {
-            if (gender.equalsIgnoreCase(getField())) {
-                return;
+        if(isMandatory() || isSet()) {
+            for (String gender : genders) {
+                if (gender.equalsIgnoreCase(getField())) {
+                    return;
+                }
             }
+            throw new CompositeException(new Exception("Invalid gender selected"));
         }
-        throw new CompositeException(new Exception("Invalid gender selected"));
     }
 }

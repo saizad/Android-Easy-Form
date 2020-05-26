@@ -63,7 +63,7 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Boolean> validObservable() {
-        return observable().map(o -> isValid);
+        return observable().map(o -> isValid());
     }
 
     public Observable<Pair<String, T>> nonEmptyInvalidObservable() {
@@ -79,7 +79,7 @@ public abstract class BaseField<T> {
     }
 
     public Observable<T> notEmptyValidObservable() {
-        return setObservable().filter(o -> isValid).map(o -> field);
+        return setObservable().filter(o -> isValid()).map(o -> field);
     }
 
     public Observable<Object> fieldUnsetObservable() {

@@ -29,6 +29,7 @@ public class DateTimeField extends StringField {
 
     public DateTimeField(@NonNull String fieldId, @Nullable String ogField, boolean isMandatory) {
         super(fieldId, ogField, isMandatory);
+        isValid();
     }
 
     @Override
