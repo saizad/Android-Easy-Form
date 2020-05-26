@@ -65,11 +65,7 @@ public abstract class FormModel<T> extends Field<T> {
 
     @Override
     public Observable<Object> observable() {
-        List<Observable<BaseField<?>>> list = new ArrayList<>();
-        for (BaseField<?> field : fields) {
-            list.add(buildFieldObservable(field));
-        }
-        return Observable.merge(list);
+        return allFieldObservable.map(__ -> new Object());
     }
 
     @NonNull
@@ -161,22 +157,6 @@ public abstract class FormModel<T> extends Field<T> {
             field.clear();
         }
         super.clear();
-    }
-
-    public final Observable<Boolean> formModified() {
-        return allFieldObservable.map(o -> isModified());
-    }
-
-    public final Observable<Boolean> formModifiedValid() {
-        return allFieldObservable.map(o -> isModified() && isValid());
-    }
-
-    public final Observable<Boolean> isValidObservable() {
-        return allFieldObservable.map(o -> isValid());
-    }
-
-    public final Observable<Boolean> validFormObservable() {
-        return isValidObservable().filter(__ -> __);
     }
 
     public final Observable<BaseField<?>> formEdited() {

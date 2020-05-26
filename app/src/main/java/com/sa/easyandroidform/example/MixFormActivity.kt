@@ -50,7 +50,7 @@ class MixFormActivity : AppCompatActivity() {
             }, dateTime.year, dateTime.monthOfYear - 1, dateTime.dayOfMonth).show()
         }
 
-        form.isValidObservable
+        form.validObservable()
             .subscribe {
                 save.isEnabled = it
             }

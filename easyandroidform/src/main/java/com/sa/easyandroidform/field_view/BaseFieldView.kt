@@ -3,9 +3,8 @@ package com.sa.easyandroidform.field_view
 import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.sa.easyandroidform.ObjectUtils
+import com.sa.easyandroidform.Utils
 import com.sa.easyandroidform.fields.BaseField
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 abstract class BaseFieldView<F> @JvmOverloads constructor(
@@ -24,33 +23,23 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
             fieldMandatory()
         }
 
-        field.observable()
+        field.errorStateObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (ObjectUtils.isNotNull(field.field) && !field.isValid) {
-                    error()
-                } else if (field.isModified) {
-                    edited()
-                } else {
-                    neutral()
+                if(field.isValid) {
+                    displayError(false, null)
+                }else {
+                    val second = it.second
+                    if(second != null){
+                        displayError(true, Utils.compositeExceptionMessage(second))
+                    }
                 }
             }
 
-        field.nonEmptyInvalidObservable()
+        field.observable()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { pair ->
+            .subscribe {
                 showValue(field.field)
-                displayError(!field.isValid, pair.first)
-            }
-
-        Observable.merge<Any>(
-            field.notEmptyValidObservable(),
-            field.fieldUnsetObservable()
-        )
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { o ->
-                showValue(field.field)
-                displayError(false, "")
             }
 
         field.networkError()
@@ -60,13 +49,10 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
     }
 
     fun updateValue(value: F?) {
-        fieldItem.setField(value)
+        fieldItem.field = value
     }
 
     abstract fun fieldMandatory()
-    abstract fun error()
-    abstract fun edited()
-    abstract fun neutral()
     abstract fun showValue(field: F?)
     abstract fun displayError(show: Boolean, error: String?)
 

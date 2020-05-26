@@ -7,6 +7,7 @@ import com.sa.easyandroidform.fields.MandatoryStringField;
 import com.sa.easyandroidform.fields.PhoneNumberField;
 import com.sa.easyandroidform.form.FormModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MandatoryForm {
@@ -32,12 +33,12 @@ public class MandatoryForm {
         public final PhoneNumberField mobileNumberField;
 
         public Form() {
-            super(Arrays.asList(new MandatoryStringField("firstname"), new MandatoryStringField("lastname"), new EmailField("email", true), new PhoneNumberField("mobilenumber",true, 10)));
+            super(new ArrayList<>(Arrays.asList(new MandatoryStringField("firstname"), new MandatoryStringField("lastname"), new EmailField("email", true), new PhoneNumberField("mobilenumber",true, 10))));
 
-            firstNameField = (MandatoryStringField) findField("firstname");
-            lastNameField = (MandatoryStringField) findField("lastname");
-            emailField = (EmailField) findField("email");
-            mobileNumberField = (PhoneNumberField) findField("mobilenumber");
+            firstNameField = requiredFindField("firstname");
+            lastNameField = requiredFindField("lastname");
+            emailField = requiredFindField("email");
+            mobileNumberField = requiredFindField("mobilenumber");
         }
 
         @NonNull

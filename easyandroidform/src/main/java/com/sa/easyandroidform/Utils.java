@@ -30,7 +30,7 @@ public final class Utils {
         return dateTime;
     }
 
-    public static String compositeExceptionMessage(CompositeException e){
+    public static String compositeExceptionMessage(@NonNull CompositeException e){
         final StringBuilder stringBuilder = new StringBuilder();
         for (Throwable exception : e.getExceptions()) {
             stringBuilder.append(exception.getMessage()).append("\n");

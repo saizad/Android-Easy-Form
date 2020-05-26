@@ -22,19 +22,21 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
     ) {
 
     private lateinit var disposable: Disposable
+    private lateinit var editText: EditText
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (!isInEditMode) {
+            editText = getEditText()
             disposable = RxTextView.textChanges(getEditText())
                 .skipInitialValue()
                 .debounce(100, TimeUnit.MILLISECONDS)
                 .filter { ObjectUtils.coalesce(fieldItem.field, "") != it.toString() }
-                .filter { !isSame(resolveTo(it), fieldItem.field) }
+                .filter { !compareValue(resolveFrom(it), fieldItem.field) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { s ->
                     Log.d("fcm", s.toString())
-                    updateValue(resolveTo(s))
+                    updateValue(resolveFrom(s))
                 }
         }
     }
@@ -45,13 +47,25 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
     }
 
     final override fun showValue(value: F?) {
-        if (!getEditText().isFocused) {
-            getEditText().setText(setText(value))
+        val editText = getEditText()
+        if (!editText.isFocused) {
+            editText.setText(resolve(value))
         }
     }
 
+    private fun compareValue(value: F?, prevValue: F?): Boolean {
+        if (ObjectUtils.isNull(value) && ObjectUtils.isNull(prevValue)) {
+            return true
+        } else if (ObjectUtils.isNotNull(value) && ObjectUtils.isNull(prevValue)) {
+            return false
+        } else if (value != null && prevValue != null) {
+            return isSame(value, prevValue)
+        }
+        return false
+    }
+
     abstract fun getEditText(): EditText
-    abstract fun resolveTo(charSequence: CharSequence): F
-    abstract fun setText(value: F?): CharSequence?
-    abstract fun isSame(value: F?, prevValue: F?): Boolean
+    abstract fun resolveFrom(charSequence: CharSequence): F
+    abstract fun resolve(value: F?): CharSequence?
+    abstract fun isSame(value: F, prevValue: F): Boolean
 }

@@ -16,7 +16,7 @@ public class PhoneNumberFieldTest extends BaseFieldTest<String> {
 
     @Override
     protected String getInvalidFieldValue() {
-        return "52345432";
+        return "";
     }
 
     @NotNull

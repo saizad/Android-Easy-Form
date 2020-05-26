@@ -1,28 +1,43 @@
 package com.sa.easyandroidform.field_view;
 
 import android.content.Context;
+import android.widget.EditText;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class StringFieldView extends BaseFieldView<String> {
+public class InputFieldView extends BaseInputFieldView<Integer> {
 
-    public StringFieldView(@NotNull Context context) {
+    public InputFieldView(@NotNull Context context) {
         super(context);
     }
 
+    @NotNull
     @Override
-    public void fieldMandatory() {
-
+    public EditText getEditText() {
+        return null;
     }
 
     @Override
-    public void showValue(@Nullable String field) {
-
+    public Integer resolveFrom(@NotNull CharSequence charSequence) {
+        return Integer.valueOf(charSequence.toString());
     }
 
     @Override
-    public void displayError(boolean show, @Nullable String error) {
-
+    public CharSequence resolve(@Nullable Integer value) {
+        if (value != null)
+            return String.valueOf(value);
+        return null;
     }
+
+    @Override
+    public boolean isSame(Integer value, Integer prevValue) {
+        return value.equals(prevValue);
+    }
+
+    @Override
+    public void fieldMandatory() { }
+
+    @Override
+    public void displayError(boolean show, @Nullable String error) { }
 }

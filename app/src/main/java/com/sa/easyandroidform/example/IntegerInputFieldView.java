@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public class IntegerInputFieldView extends InputFieldView<String> {
+public class IntegerInputFieldView extends InputFieldView<Integer> {
 
     public IntegerInputFieldView(@NotNull Context context) {
         super(context);
@@ -22,17 +22,19 @@ public class IntegerInputFieldView extends InputFieldView<String> {
     }
 
     @Override
-    public String resolveTo(@NotNull CharSequence charSequence) {
-        return charSequence.toString();
+    public Integer resolveFrom(@NotNull CharSequence charSequence) {
+        return Integer.valueOf(charSequence.toString());
     }
 
     @Override
-    public CharSequence setText(@Nullable String value) {
-        return value;
+    public CharSequence resolve(@Nullable Integer value) {
+        if (value != null)
+            return String.valueOf(value);
+        return null;
     }
 
     @Override
-    public boolean compare(String value, String prevValue) {
+    public boolean isSame(Integer value, Integer prevValue) {
         return value.equals(prevValue);
     }
 }

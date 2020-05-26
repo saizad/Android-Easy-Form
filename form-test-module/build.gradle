@@ -45,14 +45,11 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 
     androidTestRuntimeOnly "de.mannodermaus.junit5:android-instrumentation-test-runner:0.2.2"
-    implementation "org.junit.jupiter:junit-jupiter-api:5.3.2"
-    implementation "org.junit.jupiter:junit-jupiter-params:5.3.1"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.2"
 
     // Add the Android Instrumentation Test dependencies to the product flavor only
     // (with this, only the "experimental" flavor must have minSdkVersion 26)
@@ -68,6 +65,9 @@ dependencies {
     implementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
 
     testImplementation 'joda-time:joda-time:2.9.3'
+    implementation "org.junit.jupiter:junit-jupiter-params:5.3.2"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

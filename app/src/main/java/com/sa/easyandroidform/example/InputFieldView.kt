@@ -5,7 +5,6 @@ import android.os.Handler
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
-import com.sa.easyandroidform.ObjectUtils
 import com.sa.easyandroidform.field_view.BaseInputFieldView
 import kotlinx.android.synthetic.main.input_field_view.view.*
 
@@ -35,32 +34,8 @@ abstract class InputFieldView<F> @JvmOverloads constructor(
     override fun fieldMandatory() {
     }
 
-    override fun error() {
-    }
-
-    override fun edited() {
-    }
-
-    override fun neutral() {
-    }
-
     override fun displayError(show: Boolean, error: String?) {
         editTextLayout.error = error
         editTextLayout.isErrorEnabled = show
     }
-
-    final override fun isSame(value: F?, prevValue: F?): Boolean {
-
-        if (ObjectUtils.isNull(value) && ObjectUtils.isNull(prevValue)) {
-            return true
-        } else if (ObjectUtils.isNotNull(value) && ObjectUtils.isNull(prevValue)) {
-            return false
-        } else if(value != null && prevValue != null){
-            return compare(value, prevValue)
-        }
-        return false
-    }
-
-    abstract fun compare(value: F, prevValue: F): Boolean
-
 }

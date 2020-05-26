@@ -163,8 +163,7 @@ public abstract class BaseFieldTest<F> {
 
     @Test
     void validObservable_false() {
-        field.setIsMandatory(true);
-        ObservablesCall.validObservable(field, false);
+        ObservablesCall.validObservable(mandatoryField, false);
     }
 
     @Test
