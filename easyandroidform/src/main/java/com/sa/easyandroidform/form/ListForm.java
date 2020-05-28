@@ -13,13 +13,21 @@ import io.reactivex.exceptions.CompositeException;
 public class ListForm<T> extends FormModel<List<T>> {
 
 
-    public ListForm(String formName, List<T> bodies, Func1<Integer, FormModel<T>> func1) {
-        super(formName, new ArrayList<>(forms(bodies, func1)));
+    public ListForm(String formName) {
+        super(formName, new ArrayList<>());
     }
 
-    private static <T> List<FormModel<T>> forms(List<T> bodies, Func1<Integer, FormModel<T>> func1) {
+    public ListForm(String formName, List<T> bodies, Func1<Integer, FormModel<T>> func1) {
+        super(formName, new ArrayList<>(forms(bodies.size(), func1)));
+    }
+
+    public ListForm(String formName, int size, Func1<Integer, FormModel<T>> func1) {
+        super(formName, new ArrayList<>(forms(size, func1)));
+    }
+
+    private static <T> List<FormModel<T>> forms(int size, Func1<Integer, FormModel<T>> func1) {
         List<FormModel<T>> list = new ArrayList<>();
-        for (int i = 0; i < bodies.size(); i++) {
+        for (int i = 0; i < size; i++) {
             list.add(func1.call(i));
         }
         return list;

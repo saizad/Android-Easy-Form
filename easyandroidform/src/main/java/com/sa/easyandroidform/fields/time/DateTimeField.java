@@ -13,7 +13,7 @@ import io.reactivex.exceptions.CompositeException;
 
 public class DateTimeField extends StringField {
 
-    private DateTime dateTime;
+    private transient DateTime dateTime;
 
     public DateTimeField(@NonNull String fieldId) {
         super(fieldId);

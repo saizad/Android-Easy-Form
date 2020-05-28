@@ -37,8 +37,8 @@ abstract public class BaseModelFormTest<F extends FormModel<?>> {
 
     abstract public F initForm();
 
-    abstract BaseField<?> changeFormFieldToAnyValue();
-    abstract void setValidValue(BaseField<?> field);
+    public abstract BaseField<?> changeFormFieldToAnyValue();
+    public abstract void setValidValue(BaseField<?> field);
 
     private StringField addField() {
         return addField(STRING_FIELD_NAME);

@@ -30,7 +30,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
                     displayError(false, null)
                 }else {
                     val second = it.second
-                    if(second != null){
+                    if(second != null && field.isSet){
                         displayError(true, Utils.compositeExceptionMessage(second))
                     }
                 }
