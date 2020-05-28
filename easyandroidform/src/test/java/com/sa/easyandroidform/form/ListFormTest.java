@@ -25,7 +25,7 @@ public class ListFormTest extends BaseListFormTest<ListFormTest.ListModel.Form> 
     }
 
     @Override
-    void setValidValue(BaseField<?> field) {
+    public void setValidValue(BaseField<?> field) {
         if(field instanceof FormModel){
             fomModelSetValue((FormModel<?>) field);
         }else {
@@ -34,7 +34,7 @@ public class ListFormTest extends BaseListFormTest<ListFormTest.ListModel.Form> 
     }
 
     @Override
-    BaseField<?> changeFormFieldToAnyValue() {
+    public BaseField<?> changeFormFieldToAnyValue() {
         final FormModelTest.ModelClass.Form listForm = (FormModelTest.ModelClass.Form) this.form.mandatoryModelList.fields.get(0);
         TestUtils.setRandom(listForm.mandatoryStringField);
         return this.form.mandatoryModelList;

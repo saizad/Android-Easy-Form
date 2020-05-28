@@ -27,12 +27,12 @@ public class NonMandatoryFormModelTest<M extends NonMandatoryFormModelTest.Model
     }
 
     @Override
-    void setValidValue(BaseField<?> field) {
+    public void setValidValue(BaseField<?> field) {
         TestUtils.setRandom(field);
     }
 
     @Override
-    BaseField<?> changeFormFieldToAnyValue() {
+    public BaseField<?> changeFormFieldToAnyValue() {
         TestUtils.setRandom(form.integerField);
         return form.integerField;
     }

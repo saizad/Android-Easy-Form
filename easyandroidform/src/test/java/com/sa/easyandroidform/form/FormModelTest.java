@@ -28,12 +28,12 @@ public class FormModelTest<M extends FormModelTest.ModelClass> extends BaseModel
     }
 
     @Override
-    void setValidValue(BaseField<?> field) {
+    public void setValidValue(BaseField<?> field) {
         TestUtils.setRandom(field);
     }
 
     @Override
-    BaseField<?> changeFormFieldToAnyValue() {
+    public BaseField<?> changeFormFieldToAnyValue() {
         TestUtils.setRandom(form.floatField);
         return form.floatField;
     }

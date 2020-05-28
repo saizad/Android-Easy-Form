@@ -23,7 +23,7 @@ public class FieldFormTest extends BaseFieldFormTest<FieldFormTest.FieldModelCla
     }
 
     @Override
-    void setValidValue(BaseField<?> field) {
+    public void setValidValue(BaseField<?> field) {
         if(field instanceof FormModel){
             fomModelSetValue((FormModel<?>) field);
         }else {
@@ -32,7 +32,7 @@ public class FieldFormTest extends BaseFieldFormTest<FieldFormTest.FieldModelCla
     }
 
     @Override
-    BaseField<?> changeFormFieldToAnyValue() {
+    public BaseField<?> changeFormFieldToAnyValue() {
         TestUtils.setRandom(form.mandatoryModelClassField.floatField);
         return form.mandatoryModelClassField;
     }
