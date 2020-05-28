@@ -95,6 +95,11 @@ public abstract class FormModel<T> extends Field<T> {
         super.publish();
     }
 
+    @Override
+    public void networkErrorPublish(String error) {
+        super.networkErrorPublish(error);
+    }
+
     @CallSuper
     @Override
     public void validate() throws CompositeException {
