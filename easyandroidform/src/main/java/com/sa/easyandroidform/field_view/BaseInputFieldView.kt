@@ -22,7 +22,7 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
     ) {
 
     private lateinit var disposable: Disposable
-    private lateinit var editText: EditText
+    private var editText: EditText? = null
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -47,9 +47,11 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
     }
 
     final override fun showValue(value: F?) {
-        val editText = getEditText()
-        if (!editText.isFocused) {
-            editText.setText(resolve(value))
+        if(editText == null) {
+            editText = getEditText()
+        }
+        if (!editText!!.isFocused) {
+            editText!!.setText(resolve(value))
         }
     }
 

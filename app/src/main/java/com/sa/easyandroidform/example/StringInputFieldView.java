@@ -22,7 +22,7 @@ public class StringInputFieldView extends InputFieldView<String> {
 
     @Override
     public String resolveFrom(@NotNull CharSequence charSequence) {
-        if(charSequence.toString().isEmpty()){
+        if (charSequence.toString().isEmpty()) {
             return null;
         }
         return charSequence.toString();
@@ -33,6 +33,11 @@ public class StringInputFieldView extends InputFieldView<String> {
         return value;
     }
 
+
+    @Override
+    public void notSetError(@NotNull String error) {
+
+    }
 
     @Override
     public boolean isSame(String value, String prevValue) {

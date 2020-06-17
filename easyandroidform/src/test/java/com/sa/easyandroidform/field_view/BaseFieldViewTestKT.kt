@@ -1,8 +1,8 @@
 package com.sa.easyandroidform.field_view
 
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.times
 import com.sa.easyandroidform.fields.BaseField
-import com.sa.easyandroidform.fields.Field
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
 import org.junit.jupiter.api.Test
@@ -35,29 +35,25 @@ open abstract class BaseFieldViewTestKT<V, T : BaseFieldView<V>>(
     }
 
     protected fun verify(
-        showsValueNumberOfInvocations: Int = 1,
-        displayErrorsNumberOfInvocations: Int = 1, isError: Boolean = false
+        field: BaseField<V> = this.field,
+        invocations: Int = 1, isError: Boolean = false
     ) {
         Mockito
             .verify(baseFieldView, Mockito.times(booleanToBit(baseFieldView.fieldItem.isMandatory)))
             .fieldMandatory()
 
         Mockito
-            .verify(baseFieldView, Mockito.times(showsValueNumberOfInvocations))
+            .verify(baseFieldView, Mockito.times(invocations))
             .showValue(field.field)
 
-        Mockito
-            .verify(baseFieldView, Mockito.times(displayErrorsNumberOfInvocations))
-            .displayError(eq(isError), Mockito.any())
-    }
-
-    private fun setField(field: BaseField<V>, isValid: Boolean = true) {
-        if (isValid) {
-            field.field = validValue()
-        } else {
-            field.field = invalidValue()
+        if(field.isSet) {
+            Mockito
+                .verify(baseFieldView, Mockito.times(invocations))
+                .displayError(eq(isError), Mockito.any())
+        }else if(!field.isSet && isError){
+//            Mockito
+//                .verify(baseFieldView, Mockito.times(showsValueNumberOfInvocations)).notSetError("")
         }
-        verify(showsValueNumberOfInvocations = 2, isError = !isValid)
     }
 
     @Test
@@ -69,33 +65,23 @@ open abstract class BaseFieldViewTestKT<V, T : BaseFieldView<V>>(
     @Test
     fun fieldMandatory__called_1() {
         baseFieldView.setField(mandatoryOgField)
-        verify()
+        verify(mandatoryOgField)
     }
 
     @Test
-    fun validate_calls__init_invalid() {
-        val field = Field("init", invalidValue(), true)
-        baseFieldView.setField(field)
-        verify(isError = true)
+    fun change_field__invalid() {
+        baseFieldView.setField(mandatoryField)
+        mandatoryField.field = null
+        verify(mandatoryField, isError = true, invocations = 2)
     }
 
     @Test
-    fun validate_calls__init_valid() {
-        val field = Field("init", validValue())
-        baseFieldView.setField(field)
-        verify(showsValueNumberOfInvocations = 1)
-    }
-
-    @Test
-    fun validate_calls__change_field_invalid() {
-        baseFieldView.setField(field)
-        setField(field, false)
-    }
-
-    @Test
-    fun validate_calls__change_field_valid() {
-        baseFieldView.setField(field)
-        setField(field)
+    fun change_field__valid() {
+        baseFieldView.setField(mandatoryOgField)
+        val validValue = validValue()
+        mandatoryOgField.field = validValue
+        Mockito.verify(baseFieldView, times(1)).showValue(validValue)
+        Mockito.verify(baseFieldView, times(2)).displayError(eq(false), Mockito.any())
     }
 
     @Test
@@ -106,24 +92,10 @@ open abstract class BaseFieldViewTestKT<V, T : BaseFieldView<V>>(
 
     @Test
     fun showValue__change_field_invalid() {
-        baseFieldView.setField(field)
-        setField(field, false)
+        baseFieldView.setField(mandatoryField)
+        mandatoryField.field = null
+        Mockito.verify(baseFieldView, times(2)).showValue(null)
+        Mockito.verify(baseFieldView, times(1)).displayError(eq(true), Mockito.any())
     }
-
-    @Test
-    fun showValue__change_field_invalid_multiple() {
-        baseFieldView.setField(field)
-        field.field = invalidValue()
-        field.field = invalidValue()
-        verify(isError = true, showsValueNumberOfInvocations = 2)
-    }
-
-    @Test
-    fun showValue__change_field_valid() {
-        baseFieldView.setField(field)
-        field.field = validValue()
-        verify(isError = false)
-    }
-
 
 }

@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 
 public class EndDateTimeField extends DateTimeField {
 
-    private transient @NonNull DateTimeField startDateTimeField;
+    public transient @NonNull DateTimeField startDateTimeField;
 
     public EndDateTimeField(@NonNull String fieldId) {
         super(fieldId);

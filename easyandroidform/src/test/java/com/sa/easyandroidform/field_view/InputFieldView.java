@@ -40,4 +40,8 @@ public class InputFieldView extends BaseInputFieldView<Integer> {
 
     @Override
     public void displayError(boolean show, @Nullable String error) { }
+
+    public void notSetError(@NotNull String error) {
+
+    }
 }

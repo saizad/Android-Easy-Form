@@ -26,12 +26,14 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
         field.errorStateObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if(field.isValid) {
+                if (field.isValid) {
                     displayError(false, null)
-                }else {
+                } else {
                     val second = it.second
-                    if(second != null && field.isSet){
+                    if (second != null && field.isSet) {
                         displayError(true, Utils.compositeExceptionMessage(second))
+                    } else if (second != null && !field.isSet) {
+//                        notSetError(Utils.compositeExceptionMessage(second))
                     }
                 }
             }
@@ -53,7 +55,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
     }
 
     abstract fun fieldMandatory()
-    abstract fun showValue(field: F?)
+    abstract fun showValue(value: F?)
     abstract fun displayError(show: Boolean, error: String?)
-
+//    abstract fun notSetError(error: String)
 }

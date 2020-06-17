@@ -34,6 +34,11 @@ public class IntegerInputFieldView extends InputFieldView<Integer> {
     }
 
     @Override
+    public void notSetError(@NotNull String error) {
+
+    }
+
+    @Override
     public boolean isSame(Integer value, Integer prevValue) {
         return value.equals(prevValue);
     }

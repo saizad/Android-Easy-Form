@@ -51,7 +51,7 @@ public abstract class BaseField<T> {
         this.fieldId = fieldId;
         this.ogField = ogField;
         this.field = ogField;
-        subject.onNext(ObjectUtils.coalesce(field, emptyObject));
+        __publish();
     }
 
     public Observable<Object> observable() {

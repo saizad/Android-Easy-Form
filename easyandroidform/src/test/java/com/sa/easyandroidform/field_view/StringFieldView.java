@@ -25,4 +25,8 @@ public class StringFieldView extends BaseFieldView<String> {
     public void displayError(boolean show, @Nullable String error) {
 
     }
+
+    public void notSetError(@NotNull String error) {
+
+    }
 }

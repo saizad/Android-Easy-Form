@@ -2,11 +2,14 @@ package com.sa.easyandroidform.field_view;
 
 import android.widget.EditText;
 
+import com.sa.easyandroidform.fields.BaseField;
 import com.sa.easyandroidform.fields.NonZeroIntField;
 
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.mockito.Mockito.*;
 
 public class IntegerInputFieldViewTest extends BaseFieldViewTestKT<Integer, InputFieldView> {
 
@@ -22,44 +25,41 @@ public class IntegerInputFieldViewTest extends BaseFieldViewTestKT<Integer, Inpu
     @Nullable
     @Override
     public Integer invalidValue() {
-        return 0;
+        return null;
     }
 
     @Nullable
     @Override
     public Integer validValue() {
-        return 1;
+        return 3;
     }
 
     @Test
-    public void resolve__not_called(){
+    public void resolve__not_called() {
         Mockito.when(editText.isFocused()).thenReturn(true);
         getBaseFieldView().setField(getField());
         Mockito.verify(getBaseFieldView(), Mockito.never()).resolve(Mockito.any());
     }
 
     @Test
-    public void resolve__called(){
+    public void resolve__called() {
         getBaseFieldView().setField(getField());
-        Mockito.verify(getBaseFieldView(), Mockito.times(1)).resolve(Mockito.any());
+        Mockito.verify(getBaseFieldView(), times(1)).resolve(Mockito.any());
     }
 
     @Test
-    public void getEditText__not_called(){
+    public void getEditText__not_called() {
         Mockito.verify(getBaseFieldView(), Mockito.never()).getEditText();
     }
 
     @Test
     public void fieldMandatory__not_called() {
-//        System.out.println(getBaseFieldView().getEditText());
-//        System.out.println(getBaseFieldView().getEditText());
-//        System.out.println(getBaseFieldView().getEditText());
-//        System.out.println(getBaseFieldView().getEditText());
-        final InputFieldView mock = Mockito.mock(InputFieldView.class);
-        Mockito.when(mock.getEditText()).thenReturn(editText);
-        getBaseFieldView().setField(getField());
-        Mockito.verify(mock, Mockito.times(1))
-                .showValue(getField().getField());
-//        verify(1,1,false);
+        final BaseField<Integer> mandatoryField = getMandatoryField();
+        final Integer value = invalidValue();
+        mandatoryField.setField(value);
+        final InputFieldView baseFieldView = getBaseFieldView();
+        baseFieldView.setField(mandatoryField);
+        Mockito.verify(baseFieldView, times(1))
+                .showValue(value);
     }
 }
