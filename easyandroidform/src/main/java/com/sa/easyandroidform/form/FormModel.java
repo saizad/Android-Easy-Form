@@ -1,5 +1,7 @@
 package com.sa.easyandroidform.form;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -237,5 +239,11 @@ public abstract class FormModel<T> extends Field<T> {
             }
         }
         return size;
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void setField(@Nullable T value) {
+        throw new RuntimeException("Don't call setField on form type field.");
     }
 }
