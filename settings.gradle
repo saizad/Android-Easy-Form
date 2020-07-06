@@ -1,6 +1,5 @@
 include ':app', ':easyandroidform'
 rootProject.name='EasyAndroidForm'
 
-if(true){
-
-}
+include ':form-test'
+project(':form-test').projectDir = new File('../EasyAndroidFormTest/form-test')

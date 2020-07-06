@@ -37,6 +37,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+//    testImplementation project(":form-test")
     testImplementation 'com.github.saizad:EasyAndroidFormTest:develop-SNAPSHOT'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

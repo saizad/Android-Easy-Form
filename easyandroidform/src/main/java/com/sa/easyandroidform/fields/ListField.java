@@ -35,9 +35,16 @@ public class ListField<T> extends BaseField<List<T>>{
         for (T currentFieldItem : field) {
             boolean isModified = false;
             for (T ogFieldItem : ogField) {
-                boolean found = compare(ogFieldItem, currentFieldItem);
-                isModified = !found;
-                if(found){
+                boolean isSame;
+                if (currentFieldItem != null && ogFieldItem != null) {
+                    isSame = compare(ogFieldItem, currentFieldItem);
+                }else if(currentFieldItem == null && ogFieldItem == null) {
+                    isSame = true;
+                } else {
+                    isSame = ogFieldItem != null;
+                }
+                isModified = !isSame;
+                if(!isModified){
                     break;
                 }
             }

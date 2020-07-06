@@ -1,6 +1,7 @@
 package com.sa.easyandroidform.form;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.sa.easyandroidform.Func1;
 import com.sa.easyandroidform.fields.BaseField;
@@ -52,5 +53,18 @@ public class ListForm<T> extends FormModel<List<T>> {
         if (isMandatory() && fields.isEmpty()) {
             throw new CompositeException(new Exception("Mandatory list form filed is empty"));
         }
+    }
+
+    @Override
+    public void setField(@Nullable List<T> value) {
+        if(value != null){
+            for (T t : value) {
+                for (int i = 0; i < fields.size(); i++) {
+                    final FormModel<T> form = (FormModel<T>) fields.get(i);
+                    form.setField(t);
+                }
+            }
+        }
+        super.setField(value);
     }
 }

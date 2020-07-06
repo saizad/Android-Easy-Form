@@ -23,9 +23,9 @@ public abstract class FormModel<T> extends Field<T> {
     public final transient List<BaseField<?>> fields;
     private final transient Observable<BaseField<?>> allFieldObservable;
 
-    private static boolean isMandatory(List<BaseField<?>> fields){
+    private static boolean isMandatory(List<BaseField<?>> fields) {
         for (BaseField field : fields) {
-            if(field.isMandatory()){
+            if (field.isMandatory()) {
                 return true;
             }
         }
@@ -48,7 +48,7 @@ public abstract class FormModel<T> extends Field<T> {
 
 
     public void add(BaseField<?>... addFields) {
-        KotlinUtilsKt.checkForDuplicateFieldName(new ArrayList<BaseField<?>>(){
+        KotlinUtilsKt.checkForDuplicateFieldName(new ArrayList<BaseField<?>>() {
             {
                 addAll(fields);
                 addAll(Arrays.asList(addFields));
@@ -61,7 +61,7 @@ public abstract class FormModel<T> extends Field<T> {
         }
     }
 
-    private Observable<BaseField<?>> buildFieldObservable(BaseField<?> field){
+    private Observable<BaseField<?>> buildFieldObservable(BaseField<?> field) {
         return field.observable().map(__ -> field);
     }
 
@@ -107,7 +107,7 @@ public abstract class FormModel<T> extends Field<T> {
     public void validate() throws CompositeException {
         super.validate();
         List<CompositeException> exceptions = new ArrayList<>();
-        for (BaseField field : fields) {
+        for (BaseField<?> field : fields) {
             try {
                 field.validate();
             } catch (CompositeException e) {
@@ -121,7 +121,7 @@ public abstract class FormModel<T> extends Field<T> {
 
     @Override
     public boolean isModified() {
-        for (BaseField field : fields) {
+        for (BaseField<?> field : fields) {
             if (field.isModified()) {
                 return true;
             }
@@ -131,7 +131,7 @@ public abstract class FormModel<T> extends Field<T> {
 
     @Override
     public boolean isValid() {
-        for (BaseField field : fields) {
+        for (BaseField<?> field : fields) {
             if (!field.isValid()) {
                 return false;
             }
@@ -141,7 +141,7 @@ public abstract class FormModel<T> extends Field<T> {
 
     @Override
     public boolean hasValueChanged() {
-        for (BaseField field : fields) {
+        for (BaseField<?> field : fields) {
             if (field.hasValueChanged()) {
                 return true;
             }
@@ -150,7 +150,7 @@ public abstract class FormModel<T> extends Field<T> {
     }
 
     public final boolean isAllMandatoryFieldsProvided() {
-        for (BaseField field : fields) {
+        for (BaseField<?> field : fields) {
             if (field.isMandatory() && !field.isValid()) {
                 return false;
             }
@@ -158,12 +158,12 @@ public abstract class FormModel<T> extends Field<T> {
         return true;
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void clear() {
-        for (BaseField field : fields) {
+        for (BaseField<?> field : fields) {
             field.clear();
         }
-        super.clear();
     }
 
     public final Observable<BaseField<?>> formEdited() {
@@ -209,7 +209,7 @@ public abstract class FormModel<T> extends Field<T> {
 
     public List<ErrorField> errors() {
         List<ErrorField> errorFieldList = new ArrayList<>();
-        for (BaseField field : fields) {
+        for (BaseField<?> field : fields) {
             try {
                 field.validate();
             } catch (CompositeException e) {
@@ -221,29 +221,47 @@ public abstract class FormModel<T> extends Field<T> {
 
     @Override
     public boolean isSet() {
-        for (BaseField field : fields) {
-            if(field.isSet()){
+        for (BaseField<?> field : fields) {
+            if (field.isSet()) {
                 return true;
             }
         }
         return false;
     }
 
-    public int size(){
+    public int size() {
         int size = 0;
         for (BaseField<?> field : fields) {
-            if(field instanceof FormModel){
+            if (field instanceof FormModel) {
                 size += ((FormModel<?>) field).size();
-            }else {
+            } else {
                 size += 1;
             }
         }
         return size;
     }
 
-    @SuppressLint("MissingSuperCall")
+    public int setCount() {
+        int size = 0;
+        for (BaseField<?> field : fields) {
+            if (field instanceof FormModel) {
+                size += ((FormModel<?>) field).setCount();
+            } else {
+                if(field.isSet()) {
+                    size += 1;
+                }
+            }
+        }
+        return size;
+    }
+
     @Override
     public void setField(@Nullable T value) {
-        throw new RuntimeException("Don't call setField on form type field.");
+        if(value == null){
+            for (BaseField<?> field : fields) {
+                field.setField(null);
+            }
+        }
+        super.setField(value);
     }
 }

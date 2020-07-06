@@ -11,7 +11,7 @@ import java.util.List;
 public class StringListFieldTest extends BaseListFieldTest<String> {
 
     private static final String FIELD_NAME = "random";
-    private static final List<String> VALUE = Arrays.asList("a", "b", "c");
+    private static final List<String> VALUE = Arrays.asList("a", null, "c");
 
     public StringListFieldTest() {
         super(new StringListField(FIELD_NAME), new StringListField(FIELD_NAME, true), new StringListField(FIELD_NAME, VALUE, true), new StringListField(FIELD_NAME, VALUE));
