@@ -39,7 +39,7 @@ open abstract class BaseFieldViewTestKT<V, T : BaseFieldView<V>>(
         invocations: Int = 1, isError: Boolean = false
     ) {
         Mockito
-            .verify(baseFieldView, Mockito.times(booleanToBit(baseFieldView.fieldItem.isMandatory)))
+            .verify(baseFieldView, Mockito.times(booleanToBit(baseFieldView.fieldItem!!.isMandatory)))
             .fieldMandatory()
 
         Mockito

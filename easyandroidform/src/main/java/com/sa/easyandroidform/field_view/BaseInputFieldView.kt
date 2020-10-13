@@ -14,12 +14,7 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) :
-    BaseFieldView<F>(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
+) : BaseFieldView<F>(context, attrs, defStyleAttr) {
 
     private lateinit var disposable: Disposable
     private var editText: EditText? = null
@@ -30,9 +25,9 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
             editText = getEditText()
             disposable = RxTextView.textChanges(getEditText())
                 .skipInitialValue()
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .filter { ObjectUtils.coalesce(fieldItem.field, "") != it.toString() }
-                .filter { !compareValue(resolveFrom(it), fieldItem.field) }
+                .filter{fieldItem != null}
+                .filter { ObjectUtils.coalesce(fieldItem!!.field, "") != it.toString() }
+                .filter { !compareValue(resolveFrom(it), fieldItem!!.field) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { s ->
                     Log.d("fcm", s.toString())

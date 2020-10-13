@@ -13,7 +13,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    lateinit var fieldItem: BaseField<F>
+    var fieldItem: BaseField<F>? = null
 
     fun setField(field: BaseField<F>) {
 
@@ -51,7 +51,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
     }
 
     fun updateValue(value: F?) {
-        fieldItem.field = value
+        fieldItem?.field = value
     }
 
     abstract fun fieldMandatory()
