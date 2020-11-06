@@ -6,8 +6,10 @@ import android.util.Log
 import android.widget.EditText
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.sa.easyandroidform.ObjectUtils
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 abstract class BaseInputFieldView<F> @JvmOverloads constructor(
@@ -18,6 +20,12 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
 
     private lateinit var disposable: Disposable
     private var editText: EditText? = null
+    var debounceMillis = DEBOUNCE_MILLIS
+
+    companion object{
+        const val DEBOUNCE_MILLIS = 200L
+    }
+
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -25,6 +33,7 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
             editText = getEditText()
             disposable = RxTextView.textChanges(getEditText())
                 .skipInitialValue()
+                .debounce(debounceMillis, TimeUnit.MILLISECONDS, Schedulers.io())
                 .filter{fieldItem != null}
                 .filter { ObjectUtils.coalesce(fieldItem!!.field, "") != it.toString() }
                 .filter { !compareValue(resolveFrom(it), fieldItem!!.field) }

@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.sa.easyandroidform.Utils
 import com.sa.easyandroidform.fields.BaseField
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseFieldView<F> @JvmOverloads constructor(
     context: Context,
@@ -14,6 +15,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     var fieldItem: BaseField<F>? = null
+    var compositeDisposable = CompositeDisposable()
 
     fun setField(field: BaseField<F>) {
 
@@ -23,7 +25,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
             fieldMandatory()
         }
 
-        field.errorStateObservable()
+        compositeDisposable.add(field.errorStateObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 if (field.isValid) {
@@ -33,21 +35,31 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
                     if (second != null && field.isSet) {
                         displayError(true, Utils.compositeExceptionMessage(second))
                     } else if (second != null && !field.isSet) {
-//                        notSetError(Utils.compositeExceptionMessage(second))
+                        notSetError(Utils.compositeExceptionMessage(second))
                     }
                 }
-            }
+            })
 
-        field.observable()
+        compositeDisposable.add(field.observable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 showValue(field.field)
-            }
+            })
 
-        field.networkError()
+        compositeDisposable.add(field.networkError()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { error -> displayError(true, error) }
+            .subscribe { error -> displayError(true, error) })
 
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        compositeDisposable = CompositeDisposable()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        compositeDisposable.dispose()
     }
 
     fun updateValue(value: F?) {
@@ -57,5 +69,5 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
     abstract fun fieldMandatory()
     abstract fun showValue(value: F?)
     abstract fun displayError(show: Boolean, error: String?)
-//    abstract fun notSetError(error: String)
+    abstract fun notSetError(error: String)
 }
