@@ -3,16 +3,19 @@ package com.sa.easyandroidform.fields;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.core.util.Pair;
 
 import com.sa.easyandroidform.ObjectUtils;
-import com.sa.easyandroidform.Utils;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.exceptions.CompositeException;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 
 import static com.sa.easyandroidform.ObjectUtils.isNotNull;
+import static com.sa.easyandroidform.Utils.compositeExceptionMessage;
 
 
 public abstract class BaseField<T> {
@@ -27,8 +30,10 @@ public abstract class BaseField<T> {
     private transient final @Nullable
     T ogField;
     protected transient final Object emptyObject = new Object();
+    private transient BehaviorSubject<Object> publishQ = BehaviorSubject.create();
     private transient BehaviorSubject<Object> subject = BehaviorSubject.create();
     private transient BehaviorSubject<String> networkErrorSubject = BehaviorSubject.create();
+    private final transient BehaviorSubject<Boolean> validatingSubject = BehaviorSubject.create();
     private @Nullable
     T field;
     private final static String EMPTY_NETWORK_ERROR_MESSAGE = "--empty---";
@@ -52,6 +57,12 @@ public abstract class BaseField<T> {
         this.ogField = ogField;
         this.field = ogField;
         __publish();
+        publishQ.subscribeOn(Schedulers.io())
+                .switchMap(o -> Observable.fromCallable(() -> {
+                    publish();
+                    return isValid;
+                }).subscribeOn(Schedulers.io()))
+                .subscribe();
     }
 
     public Observable<Object> observable() {
@@ -63,23 +74,30 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Boolean> validObservable() {
-        return observable().map(o -> isValid());
+        return observable()
+                .subscribeOn(Schedulers.io())
+                .map(o -> isValid())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<Pair<String, T>> nonEmptyInvalidObservable() {
         return setObservable()
                 .filter(o -> ObjectUtils.isNotNull(validatedException))
-                .map(__ -> new Pair<>(Utils.compositeExceptionMessage(validatedException), getField()));
+                .map(__ -> new Pair<>(compositeExceptionMessage(validatedException), getField()));
     }
 
     public Observable<Pair<String, T>> invalidObservable() {
         return observable()
                 .filter(o -> ObjectUtils.isNotNull(validatedException))
-                .map(__ -> new Pair<>(Utils.compositeExceptionMessage(validatedException), getField()));
+                .map(__ -> new Pair<>(compositeExceptionMessage(validatedException), getField()));
     }
 
     public Observable<T> notEmptyValidObservable() {
-        return setObservable().filter(o -> isValid()).map(o -> field);
+        return setObservable()
+                .subscribeOn(Schedulers.io())
+                .filter(o -> isValid())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(o -> field);
     }
 
     public Observable<Object> fieldUnsetObservable() {
@@ -87,7 +105,10 @@ public abstract class BaseField<T> {
     }
 
     public Observable<Pair<Boolean, CompositeException>> errorStateObservable() {
-        return observable().map(o -> new Pair<>(isValid(), validatedException));
+        return observable()
+                .subscribeOn(Schedulers.io())
+                .map(o -> new Pair<>(isValid(), validatedException))
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<Boolean> modifiedObservable() {
@@ -100,6 +121,10 @@ public abstract class BaseField<T> {
 
     public Observable<String> networkError() {
         return networkErrorSubject.filter(s -> !s.equals(EMPTY_NETWORK_ERROR_MESSAGE));
+    }
+
+    public Observable<Boolean> validatingObservable() {
+        return validatingSubject.observeOn(AndroidSchedulers.mainThread());
     }
 
     public boolean isModified() {
@@ -133,10 +158,14 @@ public abstract class BaseField<T> {
         setField(null);
     }
 
+    /**
+     * This method is called on a background thread
+     */
+    @WorkerThread
     @CallSuper
     public void setField(@Nullable T value) {
         field = value;
-        publish();
+        publishQ.onNext(emptyObject);
     }
 
     @Nullable
@@ -144,20 +173,20 @@ public abstract class BaseField<T> {
         return ogField;
     }
 
+    /**
+     * This method is called on a background thread
+     */
+    @WorkerThread
     @CallSuper
-    public void publish() {
-        __validateValue();
+    public synchronized void publish() {
+        isValid = __isValidValidate();
+        isValueModified = __isFieldValueModifiedValidate();
         __publish();
     }
 
-    private void __publish(){
+    private void __publish() {
         subject.onNext(ObjectUtils.coalesce(field, emptyObject));
         networkErrorSubject.onNext(EMPTY_NETWORK_ERROR_MESSAGE);
-    }
-
-    private void __validateValue(){
-        isValid = __isValidValidate();
-        isValueModified = __isFieldValueModifiedValidate();
     }
 
     public void networkErrorPublish(String error) {
@@ -178,7 +207,10 @@ public abstract class BaseField<T> {
         publish();
     }
 
-    private boolean __isValidValidate() {
+    @WorkerThread
+    private synchronized boolean __isValidValidate() {
+        T field = this.field;
+        validatingSubject.onNext(true);
         validatedException = null;
         boolean retValue = false;
 
@@ -192,10 +224,11 @@ public abstract class BaseField<T> {
                 validatedException = e;
             }
         }
+        validatingSubject.onNext(false);
         return retValue;
     }
 
-    private boolean __isFieldValueModifiedValidate(){
+    private boolean __isFieldValueModifiedValidate() {
         if (field != null && ogField != null) {
             return isFieldValueModified(field, ogField);
         } else if (field == null && ogField == null) {
@@ -203,26 +236,36 @@ public abstract class BaseField<T> {
         } else return ogField == null;
     }
 
+    /**
+     * This method is called on a background thread - you are required to <b>synchronously</b>
+     * validate and return if it is valid
+     */
+    @WorkerThread
     public boolean isValid() {
-        if(isValid == null){
-            __validateValue();
+        if (isValid == null) {
+            isValid = __isValidValidate();
         }
         return isValid;
     }
 
     public boolean hasValueChanged() {
-        if(isValueModified == null){
-            __validateValue();
+        if (isValueModified == null) {
+            isValueModified = __isFieldValueModifiedValidate();
         }
         return isValueModified;
     }
 
     protected abstract boolean isFieldValueModified(@NonNull T field, @NonNull T ogField);
 
+    /**
+     * This method is called on a background thread - you are required to <b>synchronously</b>
+     * validate and throw the error.
+     */
     @CallSuper
-    public void validate() throws CompositeException{
+    @WorkerThread
+    public void validate() throws CompositeException {
         if (isMandatory && !isSet()) {
-            throw new CompositeException(new Exception(fieldId +" field is mandatory and value is not provided."));
+            throw new CompositeException(new Exception(fieldId + " field is mandatory and value is not provided."));
         }
     }
 }
