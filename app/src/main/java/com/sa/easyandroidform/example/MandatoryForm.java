@@ -2,9 +2,7 @@ package com.sa.easyandroidform.example;
 
 import androidx.annotation.NonNull;
 
-import com.sa.easyandroidform.fields.EmailField;
 import com.sa.easyandroidform.fields.MandatoryStringField;
-import com.sa.easyandroidform.fields.PhoneNumberField;
 import com.sa.easyandroidform.form.FormModel;
 
 import java.util.ArrayList;
@@ -25,15 +23,20 @@ public class MandatoryForm {
     }
 
 
-    public static class Form extends FormModel<MandatoryForm>{
+    public static class Form extends FormModel<MandatoryForm> {
 
-        public final MandatoryStringField firstNameField;
+                public final MandatoryStringField firstNameField;
         public final MandatoryStringField lastNameField;
-        public final EmailField emailField;
-        public final PhoneNumberField mobileNumberField;
+        public final ExampleEmailField emailField;
+        public final ExampleMobileNumberField mobileNumberField;
 
         public Form() {
-            super(new ArrayList<>(Arrays.asList(new MandatoryStringField("firstname"), new MandatoryStringField("lastname"), new EmailField("email", true), new PhoneNumberField("mobilenumber",true, 10))));
+            super(new ArrayList<>(Arrays.asList(
+                    new MandatoryStringField("firstname", "asdffas"),
+                    new MandatoryStringField("lastname", "asdfadf"),
+                    new ExampleMobileNumberField("mobilenumber", "9844893089", true, 10),
+                    new ExampleEmailField("email", "addassadfa@gmail.com", true)
+            )));
 
             firstNameField = requiredFindField("firstname");
             lastNameField = requiredFindField("lastname");
@@ -44,7 +47,8 @@ public class MandatoryForm {
         @NonNull
         @Override
         protected MandatoryForm buildForm() {
-            return new MandatoryForm(firstNameField.getField(), lastNameField.getField(), emailField.getField(), mobileNumberField.getField());
+            return new MandatoryForm("", "", "", "");
+//            return new MandatoryForm(firstNameField.getField(), lastNameField.getField(), emailField.getField(), mobileNumberField.getField());
         }
     }
 }

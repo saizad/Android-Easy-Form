@@ -28,7 +28,7 @@ abstract class BaseFieldView<F> @JvmOverloads constructor(
         compositeDisposable.add(field.errorStateObservable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (field.isValid) {
+                if (it.first!!) {
                     displayError(false, null)
                 } else {
                     val second = it.second

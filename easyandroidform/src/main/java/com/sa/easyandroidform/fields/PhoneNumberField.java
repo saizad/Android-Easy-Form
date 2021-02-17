@@ -38,7 +38,7 @@ public class PhoneNumberField extends NonEmptyStringField {
     public void validate() throws CompositeException {
         super.validate();
         if (!isPhoneNumberValid()) {
-            throw new CompositeException(new Exception("Mobile number should be " + length + " digits longer"));
+            throw new CompositeException(new Exception("Mobile number should be " + length + " digits long"));
         }
     }
 }

@@ -39,7 +39,6 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
                 .filter { !compareValue(resolveFrom(it), fieldItem!!.field) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { s ->
-                    Log.d("fcm", s.toString())
                     updateValue(resolveFrom(s))
                 }
         }

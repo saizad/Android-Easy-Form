@@ -43,7 +43,20 @@
                 android:theme="@style/EmailFieldTheme"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/lastName" />
+                app:layout_constraintTop_toBottomOf="@id/lastName" >
+
+                <ProgressBar
+                    android:id="@+id/emailValidating"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:indeterminate="true"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+            </com.sa.easyandroidform.example.StringInputFieldView>
 
 
             <com.sa.easyandroidform.example.StringInputFieldView
@@ -54,7 +67,20 @@
                 android:theme="@style/MobileNumberFieldTheme"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/email" />
+                app:layout_constraintTop_toBottomOf="@id/email" >
+                <ProgressBar
+                    android:id="@+id/phoneValidating"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:indeterminate="true"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+            </com.sa.easyandroidform.example.StringInputFieldView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

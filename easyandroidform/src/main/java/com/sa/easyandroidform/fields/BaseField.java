@@ -34,6 +34,7 @@ public abstract class BaseField<T> {
     private transient BehaviorSubject<Object> subject = BehaviorSubject.create();
     private transient BehaviorSubject<String> networkErrorSubject = BehaviorSubject.create();
     private final transient BehaviorSubject<Boolean> validatingSubject = BehaviorSubject.create();
+    private transient Observable<Boolean> validateSubject = BehaviorSubject.create();
     private @Nullable
     T field;
     private final static String EMPTY_NETWORK_ERROR_MESSAGE = "--empty---";
@@ -60,9 +61,25 @@ public abstract class BaseField<T> {
         publishQ.subscribeOn(Schedulers.io())
                 .switchMap(o -> Observable.fromCallable(() -> {
                     publish();
-                    return isValid;
+                    return ObjectUtils.coalesce(isValid, false);
                 }).subscribeOn(Schedulers.io()))
                 .subscribe();
+
+       validateSubject = subject.subscribeOn(Schedulers.io())
+                .switchMap(o -> {
+                    return Observable
+                            .fromCallable(() -> {
+                                return internalIsValid();
+                            })
+                            .onErrorResumeNext(throwable -> {
+                                return Observable.empty();
+                            })
+                            .subscribeOn(Schedulers.io());
+                });
+    }
+
+    public Observable<Boolean> validObserve(){
+        return validateSubject;
     }
 
     public Observable<Object> observable() {
@@ -76,6 +93,7 @@ public abstract class BaseField<T> {
     public Observable<Boolean> validObservable() {
         return observable()
                 .subscribeOn(Schedulers.io())
+//                .flatMap(o -> validObserve())
                 .map(o -> isValid())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -95,6 +113,7 @@ public abstract class BaseField<T> {
     public Observable<T> notEmptyValidObservable() {
         return setObservable()
                 .subscribeOn(Schedulers.io())
+//                .flatMap(o -> validObserve())
                 .filter(o -> isValid())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(o -> field);
@@ -158,36 +177,6 @@ public abstract class BaseField<T> {
         setField(null);
     }
 
-    /**
-     * This method is called on a background thread
-     */
-    @WorkerThread
-    @CallSuper
-    public void setField(@Nullable T value) {
-        field = value;
-        publishQ.onNext(emptyObject);
-    }
-
-    @Nullable
-    public T getOgField() {
-        return ogField;
-    }
-
-    /**
-     * This method is called on a background thread
-     */
-    @WorkerThread
-    @CallSuper
-    public synchronized void publish() {
-        isValid = __isValidValidate();
-        isValueModified = __isFieldValueModifiedValidate();
-        __publish();
-    }
-
-    private void __publish() {
-        subject.onNext(ObjectUtils.coalesce(field, emptyObject));
-        networkErrorSubject.onNext(EMPTY_NETWORK_ERROR_MESSAGE);
-    }
 
     public void networkErrorPublish(String error) {
         networkErrorSubject.onNext(error);
@@ -207,6 +196,78 @@ public abstract class BaseField<T> {
         publish();
     }
 
+    private boolean __isFieldValueModifiedValidate() {
+        if (field != null && ogField != null) {
+            return isFieldValueModified(field, ogField);
+        } else if (field == null && ogField == null) {
+            return false;
+        } else return ogField == null;
+    }
+
+    /**
+     * This method is called on a background thread
+     */
+    @CallSuper
+    public void setField(@Nullable T value) {
+        field = value;
+        publishQ.onNext(emptyObject);
+    }
+
+    @Nullable
+    public T getOgField() {
+        return ogField;
+    }
+
+    private void __publish() {
+        subject.onNext(ObjectUtils.coalesce(field, emptyObject));
+        networkErrorSubject.onNext(EMPTY_NETWORK_ERROR_MESSAGE);
+    }
+
+    /**
+     * This method is called on a background thread
+     */
+    @WorkerThread
+    @CallSuper
+    public void publish() {
+        isValid = null;
+        try{
+            isValid = isValid();
+            isValueModified = __isFieldValueModifiedValidate();
+            __publish();
+        } catch (Exception ignored) {
+        }
+    }
+
+    /**
+     * This method is called on a background thread - you are required to <b>synchronously</b>
+     * validate and return if it is valid
+     */
+    @WorkerThread
+    public boolean isValid() {
+        return validObserve().blockingFirst();
+    }
+
+    @WorkerThread
+    private synchronized boolean internalIsValid() {
+        if (isValid == null) {
+            isValid = __isValidValidate();
+        }
+        return isValid;
+    }
+
+
+    /**
+     * This method is called on a background thread - you are required to <b>synchronously</b>
+     * validate and throw the error.
+     */
+    @CallSuper
+    @WorkerThread
+    public void validate() throws CompositeException {
+        if (isMandatory && !isSet()) {
+            throw new CompositeException(new Exception(fieldId + " field is mandatory and value is not provided."));
+        }
+    }
+
     @WorkerThread
     private synchronized boolean __isValidValidate() {
         T field = this.field;
@@ -221,31 +282,17 @@ public abstract class BaseField<T> {
                 validate();
                 retValue = true;
             } catch (CompositeException e) {
+                StringBuilder builder = new StringBuilder();
+                for (Throwable exception : e.getExceptions()) {
+                    builder.append(exception.getClass().getName()).append(" = ").append(exception.getMessage()).append(" ");
+                }
                 validatedException = e;
+            } catch (Exception e){
+                validatedException = new CompositeException(e);
             }
         }
         validatingSubject.onNext(false);
         return retValue;
-    }
-
-    private boolean __isFieldValueModifiedValidate() {
-        if (field != null && ogField != null) {
-            return isFieldValueModified(field, ogField);
-        } else if (field == null && ogField == null) {
-            return false;
-        } else return ogField == null;
-    }
-
-    /**
-     * This method is called on a background thread - you are required to <b>synchronously</b>
-     * validate and return if it is valid
-     */
-    @WorkerThread
-    public boolean isValid() {
-        if (isValid == null) {
-            isValid = __isValidValidate();
-        }
-        return isValid;
     }
 
     public boolean hasValueChanged() {
@@ -257,15 +304,4 @@ public abstract class BaseField<T> {
 
     protected abstract boolean isFieldValueModified(@NonNull T field, @NonNull T ogField);
 
-    /**
-     * This method is called on a background thread - you are required to <b>synchronously</b>
-     * validate and throw the error.
-     */
-    @CallSuper
-    @WorkerThread
-    public void validate() throws CompositeException {
-        if (isMandatory && !isSet()) {
-            throw new CompositeException(new Exception(fieldId + " field is mandatory and value is not provided."));
-        }
-    }
 }
