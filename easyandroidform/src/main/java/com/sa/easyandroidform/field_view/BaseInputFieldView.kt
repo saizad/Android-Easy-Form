@@ -12,7 +12,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-abstract class BaseInputFieldView<F> @JvmOverloads constructor(
+abstract class BaseInputFieldView<F>(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -70,7 +70,7 @@ abstract class BaseInputFieldView<F> @JvmOverloads constructor(
     }
 
     abstract fun getEditText(): EditText
-    abstract fun resolveFrom(charSequence: CharSequence): F
+    abstract fun resolveFrom(charSequence: CharSequence): F?
     abstract fun resolve(value: F?): CharSequence?
     abstract fun isSame(value: F, prevValue: F): Boolean
 }
